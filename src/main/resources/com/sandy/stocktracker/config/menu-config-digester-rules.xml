@@ -1,0 +1,31 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<digester-rules>
+    
+    <pattern value="*/action-command">
+        <object-create-rule classname="com.sandy.stocktracker.ui.menumgr.ActionCmdCfg"/>
+        <set-properties-rule/>
+        <call-method-rule paramcount="0" methodname="setTargetBean"      pattern="target/bean"/>
+        <call-method-rule paramcount="0" methodname="setTargetOp"        pattern="target/operation"/>
+        <call-method-rule paramcount="0" methodname="setAsync"           pattern="target/async"/>
+        <call-method-rule paramcount="0" methodname="addEnableOnClick"   pattern="enable-on-click/action-command-ref"/>
+        <call-method-rule paramcount="0" methodname="addDisableOnClick"  pattern="disable-on-click/action-command-ref"/>
+        <set-next-rule methodname="addActionCmdCfg"/>
+    </pattern>
+    
+    <pattern value="*/menu">
+        <object-create-rule classname="com.sandy.stocktracker.ui.menumgr.MenuCfg"/>
+        <set-properties-rule/>
+        <set-next-rule methodname="addMenuCfg"/>
+    </pattern>
+    
+    <pattern value="*/menu-item">
+        <object-create-rule classname="com.sandy.stocktracker.ui.menumgr.MenuItemCfg"/>
+        <set-properties-rule/>
+        <call-method-rule paramcount="0" methodname="setIcon"           pattern="icon"/>
+        <call-method-rule paramcount="0" methodname="addPopupGroup"     pattern="popup-group/group-name"/>
+        <set-next-rule methodname="addMenuItemCfg"/>
+    </pattern>
+
+</digester-rules>
+    

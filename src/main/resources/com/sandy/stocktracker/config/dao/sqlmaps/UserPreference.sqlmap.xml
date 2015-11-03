@@ -1,0 +1,51 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+
+<!DOCTYPE sqlMap PUBLIC "-//ibatis.apache.org//DTD SQL Map 2.0//EN"
+                        "http://ibatis.apache.org/dtd/sql-map-2.dtd">
+
+<!-- ======================================================================= -->
+<!-- This configuration file specifies the queries specific for the          -->
+<!-- common profile related queries.                                         -->
+<!-- ======================================================================= -->
+<sqlMap namespace="UserPreference">
+
+    <!-- =================================================================== -->
+    <!-- EXTERNALIZED AND PARAMETRIZED QUERIES                               -->
+    <!-- =================================================================== -->
+    
+    <!-- ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ -->
+    <!-- Inserts an UserPreference into the database.                        -->
+    <!-- ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ -->
+    <insert id="insert" parameterClass="UserPreference">
+        INSERT INTO "USER_PREF"
+        (
+			"KEY",
+			"VALUE"
+        )
+        VALUES
+        (
+            #key#,
+            #value#
+        )
+    </insert>
+
+    <!-- ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ -->
+    <!-- Deletes an user preference.                                         -->
+    <!-- ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ -->
+    <delete id="delete" parameterClass="UserPreference">
+        DELETE FROM 
+            "USER_PREF"
+        WHERE
+            "KEY" = #key#
+    </delete>
+
+    <!-- ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ -->
+    <!-- Retrieves all the registered preference from the database           -->
+    <!-- ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ -->
+    <select id="getAll" resultMap="Common.UserPreferenceResultMap">
+        SELECT
+            "KEY", "VALUE"
+        FROM
+            "USER_PREF"
+    </select>
+</sqlMap>

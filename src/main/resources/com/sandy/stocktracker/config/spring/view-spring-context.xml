@@ -1,0 +1,31 @@
+<?xml version="1.0" encoding="utf-8"?>
+
+<!-- ======================================================================= -->
+<!-- This file contains spring injection configurations for use by the view  -->
+<!-- components. For service dependencies, please refer the                  -->
+<!-- biz-service-context.xml configuration file.                             -->
+<!-- ======================================================================= -->
+<beans xmlns="http://www.springframework.org/schema/beans" 
+       xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" 
+       xsi:schemaLocation="http://www.springframework.org/schema/beans 
+                           http://www.springframework.org/schema/beans/spring-beans-2.0.xsd ">
+
+    <!-- =================================================================== -->
+    <!-- =================================================================== -->
+    <bean name="MenuManager"
+          class="com.sandy.stocktracker.ui.menumgr.MenuManager">
+        <property name="menuConfigRes" value="/com/sandy/stocktracker/config/menu-config.xml" />
+    </bean>
+
+    <!-- =================================================================== -->
+    <!-- =================================================================== -->
+    <bean name="SystemEventMenuEnabler"
+          class="com.sandy.stocktracker.ui.menumgr.SystemEventMenuEnabler">
+    </bean>
+
+    <!-- =================================================================== -->
+    <!-- =================================================================== -->
+    <bean name="STViewService"
+          class="com.sandy.stocktracker.ui.svc.STViewService">
+    </bean>
+</beans>  

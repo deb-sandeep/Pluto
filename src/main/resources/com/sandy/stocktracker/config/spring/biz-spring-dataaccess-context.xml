@@ -1,0 +1,54 @@
+<?xml version="1.0" encoding="utf-8"?>
+<beans xmlns="http://www.springframework.org/schema/beans" 
+       xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" 
+       xmlns:aop="http://www.springframework.org/schema/aop"
+       xmlns:tx="http://www.springframework.org/schema/tx"
+       xsi:schemaLocation="http://www.springframework.org/schema/beans http://www.springframework.org/schema/beans/spring-beans-2.0.xsd http://www.springframework.org/schema/tx http://www.springframework.org/schema/tx/spring-tx-2.0.xsd http://www.springframework.org/schema/aop http://www.springframework.org/schema/aop/spring-aop-2.0.xsd">
+       
+    <!-- =================================================================== -->
+    <!-- Load configuration for data source from external file.              -->
+    <!-- =================================================================== -->
+    <bean class="org.springframework.beans.factory.config.PropertyPlaceholderConfigurer">
+        <property name="locations">
+           <value>/jdbc.properties</value>
+        </property>
+    </bean>
+    
+    <!-- =================================================================== -->
+    <!-- Data Source configuration for use by the SQLMapClient               -->
+    <!-- =================================================================== -->
+	<bean id="STDataSource"
+		class="org.apache.commons.dbcp.BasicDataSource"
+		destroy-method="close">
+		<property name="driverClassName" value="${JDBC.DRIVER}"/>
+		<property name="url"             value="${JDBC.URL}"/>
+		<property name="username"        value="${JDBC.USER}"/>
+		<property name="password"        value="${JDBC.PASSWORD}"/>
+        <property name="defaultReadOnly" value="false"/>
+        <property name="maxIdle"         value="${JDBC.MAXIDLE}"/>
+        <property name="maxWait"         value="${JDBC.MAXWAIT}"/>
+        <property name="maxActive"       value="${JDBC.MAXCONNECTIONS}"/>
+        <property name="removeAbandoned" value="${JDBC.REMOVE_ABANDONED}"/>
+        <property name="logAbandoned"    value="${JDBC.LOG_ABANDONED}"/>
+        <property name="initialSize"     value="${JDBC.INITIAL_SIZE}"/>
+	</bean>
+
+    <!-- =================================================================== -->
+    <!-- Loading the SqlMapClientFactoryBean with the DS configurations.     -->
+    <!-- The sqlmaps config will have further references to the module       -->
+    <!-- specific queries to be loaded.                                      -->
+    <!-- =================================================================== -->
+    <bean id="STSQLMapClient" class="org.springframework.orm.ibatis.SqlMapClientFactoryBean">
+        <property name="configLocation" value="com/sandy/stocktracker/config/dao/sqlmaps-config.xml"/>
+        <property name="dataSource" ref="STDataSource"/>
+    </bean>
+
+    <!-- =================================================================== -->
+    <!-- Create the data access manager which will encapsulate the           -->
+    <!-- SQL map client from iBatis.                                         -->
+    <!-- =================================================================== -->
+    <bean id="STDataAccessManager" class="SpringIBATISDataAccessManager">
+        <property name="sqlMapClient" ref="STSQLMapClient" />
+    </bean>
+
+</beans>

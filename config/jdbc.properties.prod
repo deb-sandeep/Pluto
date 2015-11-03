@@ -1,0 +1,13 @@
+#--------------------------------------------------------------------------------------------------
+# JDBC Based DBMS Connection Parameters Specifications 
+#--------------------------------------------------------------------------------------------------
+JDBC.URL=jdbc:postgresql://127.0.0.1/NSE.PROD
+JDBC.DRIVER=org.postgresql.Driver
+JDBC.USER=nse_prod
+JDBC.PASSWORD=xxx
+JDBC.MAXIDLE=5
+JDBC.MAXWAIT=6000
+JDBC.MAXCONNECTIONS=20
+JDBC.REMOVE_ABANDONED=true
+JDBC.LOG_ABANDONED=true
+JDBC.INITIAL_SIZE=5

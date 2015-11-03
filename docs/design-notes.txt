@@ -1,0 +1,18 @@
+Job editing
+================================================================================
+When the user selects a particular job in the job summary dialog and edits it,
+Pluto displays the Job edit dialog.
+
+The Job edit dialog, consists of two panels:
+a) The job summary panel - this panel contains the attribute common across all
+   the jobs, for example - short name, start type, cron, upper time and lower
+   time etc.
+   
+b) Job specific attribute panel - This panel respresents the user interface for
+   job specific attributes. Each Job can optionally attach a specific editor
+   to the edit panel. For example, the realtime intraday scrip value fetch job
+   can have a custom job attribute editor to enable the user to select the
+   set of scripts for which realtime intraday scrip values need to be downloaded.
+   
+   
+   

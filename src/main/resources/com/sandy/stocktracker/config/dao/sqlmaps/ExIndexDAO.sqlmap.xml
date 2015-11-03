@@ -1,0 +1,182 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+
+<!DOCTYPE sqlMap PUBLIC "-//ibatis.apache.org//DTD SQL Map 2.0//EN"
+                        "http://ibatis.apache.org/dtd/sql-map-2.dtd">
+
+<!-- ======================================================================= -->
+<!-- This configuration file specifies the queries specific for the          -->
+<!-- exchange index DAO related queries.                                     -->
+<!-- ======================================================================= -->
+<sqlMap namespace="ExIndex">
+
+    <!-- =================================================================== -->
+    <!-- EXTERNALIZED AND PARAMETRIZED QUERIES                               -->
+    <!-- =================================================================== -->
+    
+    <!-- ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ -->
+    <!-- Inserts an ExIndexDAO into the database.                            -->
+    <!-- ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ -->
+    <insert id="insertEOD" parameterClass="ExIndexEOD">
+        INSERT INTO "INDEX_EOD_DATA"
+        (
+            "INDEX_NAME",
+			"DATE",
+			"OPEN",
+			"HIGH",
+			"LOW",
+			"CLOSE",
+			"PREV_CLOSE"
+        )
+        VALUES
+        (
+            #index#,
+            #date#,
+            #open#,
+            #high#,
+            #low#,
+            #close#,
+            #prevClose#
+        )
+    </insert>
+
+    <!-- ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ -->
+    <!-- Inserts an ExIndexITD into the database.                            -->
+    <!-- ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ -->
+    <insert id="insertITD" parameterClass="ExIndexITD">
+        INSERT INTO "INDEX_ITD_DATA"
+        (
+            "INDEX_NAME",
+            "DATE",
+            "VALUE",
+            "PREV_CLOSE",
+            "OPEN"
+        )
+        VALUES
+        (
+            #index#,
+            #date#,
+            #currentVal#,
+            #prevClose#,
+            #open#
+        )
+    </insert>
+
+    <!-- ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ -->
+    <!-- Updates an active EODIndex into the database.                       -->
+    <!-- ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ -->
+    <update id="updateEOD" parameterClass="ExIndexEOD">
+        UPDATE "INDEX_EOD_DATA" SET
+            "OPEN"          = #open#,
+            "HIGH"          = #high#,
+            "LOW"           = #low#,
+            "CLOSE"         = #close#,
+            "PREV_CLOSE"    = #prevClose#
+        WHERE
+                "INDEX_NAME" = #index#
+            AND "DATE"       = #date#
+    </update>
+    
+    <!-- ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ -->
+    <!-- Retrieves the latest available EOD value for the index specified    -->
+    <!-- ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ -->
+    <select id="getLatestEOD" parameterClass="java.lang.String"
+                              resultMap="Common.ExIndexEODResultMap">
+        SELECT 
+            "INDEX_NAME",
+            "DATE",
+            "OPEN",
+            "HIGH",
+            "LOW",
+            "CLOSE",
+            "PREV_CLOSE"
+        FROM 
+            "INDEX_EOD_DATA"
+        WHERE
+            "INDEX_NAME" = #indexName#
+        ORDER BY
+            "DATE" DESC
+        LIMIT 1
+    </select>
+     
+    <!-- ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ -->
+    <!-- Returns a list of ExIndexEOD for the given index.                   -->
+    <!-- ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ -->
+    <select id="getExIndexEODForIndex" parameterClass="java.lang.String"
+                                       resultMap="Common.ExIndexEODResultMap">
+        SELECT 
+            "INDEX_NAME",
+            "DATE",
+            "OPEN",
+            "HIGH",
+            "LOW",
+            "CLOSE",
+            "PREV_CLOSE"
+        FROM 
+            "INDEX_EOD_DATA"
+        WHERE
+            "INDEX_NAME" = #indexName#
+        ORDER BY 
+            "DATE" ASC
+    </select>
+    
+    <!-- ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ -->
+    <!-- Returns a list of ExIndexEOD for the given index and date range.    -->
+    <!-- @param indexName The name of the index                              -->
+    <!-- @param fromDate  The start of the date range.                       -->
+    <!-- @param toDate    The end of the date range.                         -->
+    <!-- ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ -->
+    <select id="getExIndexEODForIndexWithRange" 
+                                       parameterClass="java.util.Map"
+                                       resultMap="Common.ExIndexEODResultMap">
+        SELECT 
+            "INDEX_NAME",
+            "DATE",
+            "OPEN",
+            "HIGH",
+            "LOW",
+            "CLOSE",
+            "PREV_CLOSE"
+        FROM 
+            "INDEX_EOD_DATA"
+        WHERE
+                "INDEX_NAME" = #indexName#
+            AND "DATE" BETWEEN #fromDate# AND #toDate#
+        ORDER BY 
+            "DATE" ASC
+    </select>
+    
+    <!-- ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ -->
+    <!-- Returns a list of ExIndexITD for the given index and date range.    -->
+    <!-- @param indexName The name of the index                              -->
+    <!-- @param fromDate  The start of the date range.                       -->
+    <!-- @param toDate    The end of the date range.                         -->
+    <!-- ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ -->
+    <select id="getExIndexITDForIndexWithRange" 
+                                       parameterClass="java.util.Map"
+                                       resultMap="Common.ExIndexITDResultMap">
+        SELECT 
+            "INDEX_NAME",
+            "DATE",
+            "VALUE",
+            "PREV_CLOSE",
+            "OPEN"
+        FROM 
+            "INDEX_ITD_DATA"
+        WHERE
+                "INDEX_NAME" = #indexName#
+            AND "DATE" BETWEEN #fromDate# AND #toDate#
+        ORDER BY 
+            "DATE" ASC
+    </select>
+    
+    <!-- ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ -->
+    <!-- Returns a list of strings representing the registered indexes for   -->
+    <!-- a given exchange.                                                   -->
+    <!-- ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ -->
+    <select id="getExIndexes" parameterClass="java.lang.String" 
+                              resultClass="java.lang.String">
+        SELECT "INDEX_NAME" 
+        FROM "MARKET_INDEX"
+        WHERE "EXCHANGE"=#exchangeName#
+    </select>
+</sqlMap>

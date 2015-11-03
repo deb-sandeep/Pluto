@@ -1,0 +1,144 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE menu-config PUBLIC "-//Menu Config//DTD 1.0//EN" 
+                             "http://localhost/dtd/bootstrap-config.dtd">
+
+<menu-config>
+  
+  <action-commands>
+    
+    <action-command name="AC_WORK_ONLINE">
+      <target>
+        <bean>NetworkSvc</bean>
+        <operation>setOnline</operation>
+        <async>true</async>
+      </target>
+      <disable-on-click>
+        <action-command-ref>AC_WORK_OFFLINE</action-command-ref>
+      </disable-on-click>
+    </action-command>
+    
+    <action-command name="AC_WORK_OFFLINE">
+      <target>
+        <bean>NetworkSvc</bean>
+        <operation>setOffline</operation>
+        <async>true</async>
+      </target>
+      <disable-on-click>
+        <action-command-ref>AC_WORK_ONLINE</action-command-ref>
+      </disable-on-click>
+    </action-command>
+
+    <action-command name="AC_SHOW_CFG_WIZ">
+      <target>
+        <bean>STViewService</bean>
+        <operation>showConfigWizard</operation>
+      </target>
+    </action-command>
+
+    <action-command name="AC_SHOW_LOG_DIALOG">
+      <target>
+        <bean>STViewService</bean>
+        <operation>showLogWindow</operation>
+      </target>
+    </action-command>
+
+    <action-command name="AC_CHARTING">
+      <target>
+        <bean>STViewService</bean>
+        <operation>showChart</operation>
+      </target>
+    </action-command>
+
+    <action-command name="AC_SHOW_ITD_PANEL">
+      <target>
+        <bean>STViewService</bean>
+        <operation>showITDPanel</operation>
+      </target>
+    </action-command>
+  
+    <action-command name="AC_SHOW_INDEX_ITD_PANEL">
+      <target>
+        <bean>STViewService</bean>
+        <operation>showIndexITDPanel</operation>
+      </target>
+    </action-command>
+  
+    <action-command name="AC_SHOW_RSS_FRAME">
+      <target>
+        <bean>STViewService</bean>
+        <operation>showRSSFrame</operation>
+      </target>
+    </action-command>
+  
+    <action-command name="AC_SCRIP_EOD_TABLE">
+      <target>
+        <bean>STViewService</bean>
+        <operation>showScripEODPanel</operation>
+      </target>
+    </action-command>
+  
+    <action-command name="AC_WND_LAYOUT">
+      <target>
+        <bean>STViewService</bean>
+        <operation>layoutCleanWorkspace</operation>
+      </target>
+    </action-command>
+  
+    <action-command name="AC_SHOW_PORTFOLIO">
+      <target>
+        <bean>STViewService</bean>
+        <operation>showPortfolioPanel</operation>
+      </target>
+    </action-command>
+  
+  </action-commands>
+
+  <menu name="Network">
+    <menu-item name="Work Online" toolbarParticipant="true" actionCmdRef="AC_WORK_ONLINE">
+      <icon>online.png</icon>
+      <popup-group>
+        <group-name>TRAY_ICON_POPUP</group-name>
+      </popup-group>
+    </menu-item>
+    <menu-item name="Work Offline" toolbarParticipant="true" actionCmdRef="AC_WORK_OFFLINE">
+      <icon>offline.png</icon>
+      <popup-group>
+        <group-name>TRAY_ICON_POPUP</group-name>
+      </popup-group>
+    </menu-item>
+  </menu>    
+
+  <menu name="Preferences">
+    <menu-item name="Configuration" toolbarParticipant="true" actionCmdRef="AC_SHOW_CFG_WIZ">
+      <icon>config_wizard.png</icon>
+    </menu-item>
+    <menu-item name="Show logs" toolbarParticipant="true" actionCmdRef="AC_SHOW_LOG_DIALOG">
+      <icon>show_log_dialog.png</icon>
+    </menu-item>
+  </menu>    
+
+  <menu name="View">
+    <menu-item name="Charting" toolbarParticipant="true" actionCmdRef="AC_CHARTING">
+      <icon>charting.png</icon>
+    </menu-item>
+    <menu-item name="Scrip ITD Panel" toolbarParticipant="true" actionCmdRef="AC_SHOW_ITD_PANEL">
+      <icon>itd_panel.png</icon>
+    </menu-item>
+    <menu-item name="Scrip EOD Panel" toolbarParticipant="true" actionCmdRef="AC_SCRIP_EOD_TABLE">
+      <icon>scrip_eod_table.png</icon>
+    </menu-item>
+    <menu-item name="Index ITD Panel" toolbarParticipant="true" actionCmdRef="AC_SHOW_INDEX_ITD_PANEL">
+      <icon>index_itd_panel.png</icon>
+    </menu-item>
+    <menu-item name="Latest News" toolbarParticipant="true" actionCmdRef="AC_SHOW_RSS_FRAME">
+      <icon>rss.png</icon>
+    </menu-item>
+    <menu-item name="Portfolio" toolbarParticipant="true" actionCmdRef="AC_SHOW_PORTFOLIO">
+      <icon>portfolio.png</icon>
+    </menu-item>
+    <menu-item name="Clean Layout" toolbarParticipant="false" actionCmdRef="AC_WND_LAYOUT">
+      <icon>wnd_layout.png</icon>
+    </menu-item>
+  </menu>    
+
+</menu-config>

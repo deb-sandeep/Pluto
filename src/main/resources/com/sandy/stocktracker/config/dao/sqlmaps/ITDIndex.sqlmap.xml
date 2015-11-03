@@ -1,0 +1,124 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+
+<!DOCTYPE sqlMap PUBLIC "-//ibatis.apache.org//DTD SQL Map 2.0//EN"
+                        "http://ibatis.apache.org/dtd/sql-map-2.dtd">
+
+<!-- ======================================================================= -->
+<!-- This configuration file specifies the queries specific for the          -->
+<!-- common profile related queries.                                         -->
+<!-- ======================================================================= -->
+<sqlMap namespace="ScripITD">
+
+    <!-- =================================================================== -->
+    <!-- EXTERNALIZED AND PARAMETRIZED QUERIES                               -->
+    <!-- =================================================================== -->
+    
+    <!-- ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ -->
+    <!-- Inserts an EODIndex into the database.                              -->
+    <!-- ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ -->
+    <insert id="insert" parameterClass="ITDIndex">
+        INSERT INTO "STOCK_ITD_DATA"
+        (
+			"SYMBOL",
+			"PRICE",
+			"TIME",
+			"TOTAL_QTY",
+			"OPEN",
+			"HIGH",
+			"LOW",
+			"PREV_CLOSE",
+			"PCT_CHANGE"
+        )
+        VALUES
+        (
+            #symbolId#,
+            #price#,
+            #time#,
+            #totalTradeQty#,
+            #openingPrice#,
+            #high#,
+            #low#,
+            #prevClose#,
+            #pctChange#
+        )
+    </insert>
+    
+    <!-- ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ -->
+    <!-- Retrieves a list of all the latest Scrip ITD for all the symbols    -->
+    <!-- for whom scrip ITD data is fetched by Pluto.                        -->
+    <!-- ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ -->
+    <select id="getLatestScripITD" resultMap="Common.ITDIndexResultMap">
+        SELECT  
+            "SYMBOL",
+            "PRICE",
+            "TIME",
+            "TOTAL_QTY",
+            "OPEN",
+            "HIGH",
+            "LOW",
+            "PREV_CLOSE",
+            "PCT_CHANGE"
+        FROM
+            "STOCK_ITD_DATA"
+        WHERE
+            "TIME" = ( select max( "TIME" ) from "STOCK_ITD_DATA" )
+        ORDER BY "SYMBOL" ASC 
+    </select>
+    
+    <!-- ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ -->
+    <!-- Retrieves the ITD indexes of a given symbol for a date range.       -->
+    <!--                                                                     -->
+    <!-- @param scrip The symbol we are dealing with                         -->
+    <!-- @param fromDate The start of the date range.                        -->
+    <!-- @param toDate The end of the date range.                            -->
+    <!-- ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ -->
+    <select id="getITDForDateRange" parameterClass="java.util.Map"
+                                    resultMap="Common.ITDIndexResultMap">
+        SELECT  
+            "SYMBOL",
+            "PRICE",
+            "TIME",
+            "TOTAL_QTY",
+            "OPEN",
+            "HIGH",
+            "LOW",
+            "PREV_CLOSE",
+            "PCT_CHANGE"
+        FROM
+            "STOCK_ITD_DATA"
+        WHERE
+                "SYMBOL"=#scrip#
+            AND ( "TIME" BETWEEN #fromDate# AND #toDate# )
+        ORDER BY 
+            "TIME" ASC
+    </select>
+
+    <!-- ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ -->
+    <!-- Inserts archived records into the archival table.                   -->
+    <!--                                                                     -->
+    <!-- @param boundary The threshold relative to which records will be     -->
+    <!--        archived.                                                    -->
+    <!-- ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ -->
+    <insert id="archiveLiveRecords" parameterClass="java.util.Date">
+        INSERT INTO "STOCK_ITD_DATA_ARCHIVE"
+        (
+            SELECT * 
+            FROM 
+                "STOCK_ITD_DATA"
+            WHERE
+                "TIME" &lt; #boundary#
+        )
+    </insert>
+
+    <!-- ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ -->
+    <!-- Deletes archived records from the live table                        -->
+    <!--                                                                     -->
+    <!-- @param boundary The threshold relative to which records will be     -->
+    <!--        deleted.                                                     -->
+    <!-- ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ -->
+    <insert id="deleteLiveRecords" parameterClass="java.util.Date">
+        DELETE FROM "STOCK_ITD_DATA"
+        WHERE
+            "TIME" &lt; #boundary#
+    </insert>
+</sqlMap>

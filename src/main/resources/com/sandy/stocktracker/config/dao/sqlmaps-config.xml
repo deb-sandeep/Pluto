@@ -1,0 +1,28 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+
+<!DOCTYPE sqlMapConfig PUBLIC "-//ibatis.apache.org//DTD SQL Map Config 2.0//EN"      
+                              "http://ibatis.apache.org/dtd/sql-map-config-2.dtd">
+
+<!-- ======================================================================= -->
+<!-- This configuration file specifies the aggregation of module specific    -->
+<!-- SQLMAP configurations that should be loaded by Spring. Queries for      -->
+<!-- individual modules can be found in module specific sqlmap configurations-->
+<!-- ======================================================================= -->
+<sqlMapConfig>
+    <settings useStatementNamespaces="true" cacheModelsEnabled = "false" />
+              
+    <!-- =================================================================== -->
+    <!-- Please add your module specific sqlmap configuration if not yet     -->
+    <!-- configured below.                                                   -->
+    <!-- =================================================================== -->
+    <sqlMap resource="com/sandy/stocktracker/config/dao/sqlmaps/alias-resultmaps.sqlmap.xml" />
+    <sqlMap resource="com/sandy/stocktracker/config/dao/sqlmaps/EODIndex.sqlmap.xml" />
+    <sqlMap resource="com/sandy/stocktracker/config/dao/sqlmaps/ITDIndex.sqlmap.xml" />
+    <sqlMap resource="com/sandy/stocktracker/config/dao/sqlmaps/Symbol.sqlmap.xml" />
+    <sqlMap resource="com/sandy/stocktracker/config/dao/sqlmaps/UserPreference.sqlmap.xml" />
+    <sqlMap resource="com/sandy/stocktracker/config/dao/sqlmaps/Job.sqlmap.xml" />
+    <sqlMap resource="com/sandy/stocktracker/config/dao/sqlmaps/ExIndexDAO.sqlmap.xml" />
+    <sqlMap resource="com/sandy/stocktracker/config/dao/sqlmaps/RSS.sqlmap.xml" />
+    <sqlMap resource="com/sandy/stocktracker/config/dao/sqlmaps/Trade.sqlmap.xml" />
+</sqlMapConfig>
+

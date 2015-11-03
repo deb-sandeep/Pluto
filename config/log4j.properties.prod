@@ -1,0 +1,47 @@
+# The level value can be either of OFF, FATAL, ERROR, INFO, INFO, INFO, ALL 
+log4j.rootLogger=ERROR, FILE
+
+log4j.appender.FILE=org.apache.log4j.RollingFileAppender
+log4j.appender.FILE.File=../logs/stocktracker.log
+log4j.appender.FILE.MaxBackupIndex=10
+log4j.appender.FILE.MaximumFileSize=1048576
+log4j.appender.FILE.append=true
+log4j.appender.FILE.layout=org.apache.log4j.PatternLayout
+log4j.appender.FILE.layout.ConversionPattern=%d{dd-MMM HH:mm:ss} %-5p %-3L %-25c{1} - %m%n
+
+log4j.appender.CONSOLE=org.apache.log4j.ConsoleAppender
+log4j.appender.CONSOLE.layout=org.apache.log4j.PatternLayout
+log4j.appender.CONSOLE.layout.ConversionPattern=%d{dd-MMM HH:mm:ss} %-5p %-3L %-25c{1} - %m%n
+
+log4j.logger.com.sandy.stocktracker = INFO
+log4j.logger.com.sandy.stocktracker.biz = INFO
+log4j.logger.com.sandy.stocktracker.biz.dao = INFO
+log4j.logger.com.sandy.stocktracker.biz.dao.impl = INFO
+log4j.logger.com.sandy.stocktracker.biz.svc = INFO
+log4j.logger.com.sandy.stocktracker.biz.svc.impl = INFO
+log4j.logger.com.sandy.stocktracker.biz.svc.job = INFO
+log4j.logger.com.sandy.stocktracker.shared = INFO
+log4j.logger.com.sandy.stocktracker.shared.dto = INFO
+log4j.logger.com.sandy.stocktracker.shared.event = INFO
+log4j.logger.com.sandy.stocktracker.ui = INFO
+log4j.logger.com.sandy.stocktracker.ui.dialogmgr = INFO
+log4j.logger.com.sandy.stocktracker.ui.dialogmgr.panel = INFO
+log4j.logger.com.sandy.stocktracker.ui.dialogmgr.panel.charting = INFO
+log4j.logger.com.sandy.stocktracker.ui.dialogmgr.panel.charting.model = INFO
+log4j.logger.com.sandy.stocktracker.ui.dialogmgr.panel.indexitdsummary = INFO
+log4j.logger.com.sandy.stocktracker.ui.dialogmgr.panel.log = INFO
+log4j.logger.com.sandy.stocktracker.ui.dialogmgr.panel.news = INFO
+log4j.logger.com.sandy.stocktracker.ui.dialogmgr.panel.proxy = INFO
+log4j.logger.com.sandy.stocktracker.ui.dialogmgr.panel.scripitdsummary = INFO
+log4j.logger.com.sandy.stocktracker.ui.dialogmgr.panel.tasksummary = INFO
+log4j.logger.com.sandy.stocktracker.ui.menumgr = INFO
+log4j.logger.com.sandy.stocktracker.ui.statusbar = INFO
+log4j.logger.com.sandy.stocktracker.ui.svc = INFO
+log4j.logger.com.sandy.stocktracker.ui.util = INFO
+log4j.logger.com.sandy.stocktracker.ui.validator = INFO
+
+log4j.logger.java.sql=ERROR
+
+log4j.logger.httpclient.wire=ERROR
+log4j.logger.httpclient.wire.header=ERROR
+log4j.logger.org.apache.commons.httpclient=ERROR

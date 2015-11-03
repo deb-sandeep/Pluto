@@ -1,0 +1,361 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+
+<!DOCTYPE sqlMap PUBLIC "-//ibatis.apache.org//DTD SQL Map 2.0//EN"
+                        "http://ibatis.apache.org/dtd/sql-map-2.dtd">
+
+<!-- ======================================================================= -->
+<!-- This configuration file specifies the queries specific for the          -->
+<!-- common profile related queries.                                         -->
+<!-- ======================================================================= -->
+<sqlMap namespace="ScripEOD">
+
+    <!-- =================================================================== -->
+    <!-- TYPE ALIAS DECLARATIONS                                             -->
+    <!-- =================================================================== -->
+    <typeAlias alias="SymbolPctChange"
+               type="com.sandy.stocktracker.shared.dto.SymbolPctChange" />
+               
+    <!-- =================================================================== -->
+    <!-- RESULT MAP CONFIGURATION                                            -->
+    <!-- =================================================================== -->
+    <resultMap id="SymbolPctChangeResultMap" class="SymbolPctChange">
+        <result property="symbol"            column="SYMBOL" />
+        <result property="date"              column="DATE" />
+        <result property="closingPrice"      column="CLOSING_PRICE" />
+        <result property="prevClosingPrice"  column="PREV_CLOSING_PRICE" />
+    </resultMap>
+    
+    <!-- ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ -->
+    <!-- Inserts an EODIndex into the database.                              -->
+    <!-- ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ -->
+    <insert id="insert" parameterClass="EODIndex">
+        INSERT INTO "STOCK_EOD_DATA"
+        (
+			"SYMBOL",
+			"DATE",
+			"OPENING_PRICE",
+			"CLOSING_PRICE",
+			"HIGH_PRICE",
+			"LOW_PRICE",
+			"TOTAL_TRADE_QTY",
+			"PREV_CLOSING_PRICE"
+        )
+        VALUES
+        (
+            #symbolId#,
+            #date#,
+            #openingPrice#,
+            #closingPrice#,
+            #highestPrice#,
+            #lowestPrice#,
+            #totalTradeQty#,
+            #prevClosePrice#
+        )
+    </insert>
+     
+    <!-- ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ -->
+    <!-- Updates an active EODIndex into the database.                       -->
+    <!-- ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ -->
+    <update id="update" parameterClass="EODIndex">
+        UPDATE "STOCK_EOD_DATA" SET
+            "OPENING_PRICE"     = #openingPrice#, 
+            "CLOSING_PRICE"     = #closingPrice#,
+            "HIGH_PRICE"        = #highestPrice#,
+            "LOW_PRICE"         = #lowestPrice#,
+            "TOTAL_TRADE_QTY"   = #totalTradeQty#,
+            "PREV_CLOSING_PRICE"= #prevClosePrice#
+        WHERE
+                "SYMBOL" = #symbolId#
+            AND "DATE"   = #date#
+    </update>
+     
+    <!-- ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ -->
+    <!-- Updates an archived EODIndex into the database.                     -->
+    <!-- ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ -->
+    <update id="updateArchive" parameterClass="EODIndex">
+        UPDATE "STOCK_EOD_DATA_ARCHIVE" SET
+            "OPENING_PRICE"     = #openingPrice#, 
+            "CLOSING_PRICE"     = #closingPrice#,
+            "HIGH_PRICE"        = #highestPrice#,
+            "LOW_PRICE"         = #lowestPrice#,
+            "TOTAL_TRADE_QTY"   = #totalTradeQty#,
+            "PREV_CLOSING_PRICE"= #prevClosePrice#
+        WHERE
+                "SYMBOL" = #symbolId#
+            AND "DATE"   = #date#
+    </update>
+     
+    <!-- ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ -->
+    <!-- Deletes an EODIndex from the database.                              -->
+    <!-- ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ -->
+    <delete id="delete" parameterClass="EODIndex">
+        DELETE FROM "STOCK_EOD_DATA"
+        WHERE
+             "SYMBOL" = #symbolId#
+         AND "DATE" = #date#
+    </delete>
+    
+    <!-- ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ -->
+    <!-- Retrieves an EOD index data for the specified scrip and date        -->
+    <!--                                                                     -->
+    <!-- @param scrip The symbol                                             -->
+    <!-- @param date The date                                                -->
+    <!-- ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ -->
+    <select id="getScripEODForDate" parameterClass="java.util.Map"
+                                    resultMap="Common.EODIndexResultMap" >
+        SELECT
+            "SYMBOL",
+            "DATE",
+            "OPENING_PRICE",
+            "CLOSING_PRICE",
+            "HIGH_PRICE",
+            "LOW_PRICE",
+            "TOTAL_TRADE_QTY",
+            "PREV_CLOSING_PRICE"
+        FROM 
+            "STOCK_EOD_DATA"
+        WHERE
+             "SYMBOL" = #scrip#
+         AND "DATE" = #date#
+    </select>
+    
+    <!-- ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ -->
+    <!-- Retrieves a list of Scrip EOD values for the scrip and date range   -->
+    <!-- specified.                                                          -->
+    <!--                                                                     -->
+    <!-- @param scrip The symbol                                             -->
+    <!-- @param startDate The start of the date range.                       -->
+    <!-- @param end       The end of the date range.                         -->
+    <!-- ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ -->
+    <select id="getScripEODForDateRange" parameterClass="java.util.Map"
+                                         resultMap="Common.EODIndexResultMap" >
+        SELECT
+            "SYMBOL",
+            "DATE",
+            "OPENING_PRICE",
+            "CLOSING_PRICE",
+            "HIGH_PRICE",
+            "LOW_PRICE",
+            "TOTAL_TRADE_QTY",
+            "PREV_CLOSING_PRICE"
+        FROM 
+            "STOCK_EOD_DATA"
+        WHERE
+             "SYMBOL" = #scrip#
+         AND "DATE" &gt;= #startDate#
+         AND "DATE" &lt;= #endDate#
+        ORDER BY
+            "DATE" ASC
+    </select>
+    
+    <!-- ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ -->
+    <!-- Retrieves a list of Scrip EOD values for the date specified.        -->
+    <!--                                                                     -->
+    <!-- @param date The date for which the Scrip EOD instances are retrieved-->
+    <!-- ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ -->
+    <select id="getAllScripEODForDate" parameterClass="java.util.Date"
+                                    resultMap="Common.EODIndexResultMap" >
+        SELECT
+            "SYMBOL",
+            "DATE",
+            "OPENING_PRICE",
+            "CLOSING_PRICE",
+            "HIGH_PRICE",
+            "LOW_PRICE",
+            "TOTAL_TRADE_QTY",
+            "PREV_CLOSING_PRICE"
+        FROM 
+            "STOCK_EOD_DATA"
+        WHERE
+            "DATE" = #date#
+        ORDER BY
+            "SYMBOL" ASC
+    </select>
+    
+    <!-- ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ -->
+    <!-- Retrieves a list of Scrip EOD values for the date specified. This   -->
+    <!-- function also embeds the details of the symbol with each ScripEOD   -->
+    <!-- instace returned.                                                   -->
+    <!--                                                                     -->
+    <!-- @param date The date for which the Scrip EOD instances are retrieved-->
+    <!-- ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ -->
+    <select id="getAllScripEODForDateWithDetail" parameterClass="java.util.Date"
+                              resultMap="Common.EODIndexResultMapWithDetails" >
+		SELECT
+		    eod."SYMBOL",
+		    eod."DATE",
+		    eod."OPENING_PRICE",
+		    eod."CLOSING_PRICE",
+		    eod."HIGH_PRICE",
+		    eod."LOW_PRICE",
+		    eod."TOTAL_TRADE_QTY",
+		    eod."PREV_CLOSING_PRICE",
+		    sym."DESCR",
+		    sym."SERIES",
+		    sym."MKT_TYPE",
+		    sym."CNX_GROUP",
+		    sym."SEGMENT",
+		    sym."ICICI_CODE"
+		FROM 
+		    "STOCK_EOD_DATA" eod,
+		    "SYMBOL" sym
+		WHERE
+		        eod."DATE" = #date#
+		    AND eod."SYMBOL" = sym."SYMBOL"
+		ORDER BY
+		    eod."SYMBOL" ASC
+    </select>
+    
+    <!-- ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ -->
+    <!-- Retrieves the latest day in the past from the reference date for    -->
+    <!-- which a bhavcopy has been imported.                                 -->
+    <!--                                                                     -->
+    <!-- @param date The reference date                                      -->
+    <!-- ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ -->
+    <select id="getLastScripEODDateBefore" parameterClass="java.util.Date"
+                                           resultClass="java.util.Date" >
+        SELECT 
+            "DATE" 
+        FROM 
+            "STOCK_EOD_DATA" 
+        WHERE 
+            "DATE" &lt; #refDate#
+        ORDER BY
+            "DATE" DESC 
+        LIMIT 1
+    </select>
+    
+    <!-- ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ -->
+    <!-- Retrieves the last N percentage EOD change values for the given     -->
+    <!-- symbol and the date specified.                                      -->
+    <!--                                                                     -->
+    <!-- @param scrip The symbol                                             -->
+    <!-- @param date The date prior to which the data is required            -->
+    <!-- @param n The number of data items requested                         -->
+    <!-- ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ -->
+    <select id="getLastNPctEODChange" parameterClass="java.util.Map"
+                                       resultClass="java.lang.Double">
+        SELECT
+            (("CLOSING_PRICE"-"PREV_CLOSING_PRICE")/"PREV_CLOSING_PRICE")*100 
+        FROM 
+            "STOCK_EOD_DATA" 
+        WHERE 
+                "DATE" &lt; #date# 
+            AND "SYMBOL" = #symbol#
+        ORDER BY 
+            "DATE" DESC 
+        LIMIT $n$
+    </select>
+    
+    <!-- ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ -->
+    <!-- Retrieves the last N percentage EOD change values for the given     -->
+    <!-- symbol and the date specified.                                      -->
+    <!--                                                                     -->
+    <!-- @param scrip The symbol                                             -->
+    <!-- @param date The date prior to which the data is required            -->
+    <!-- @param n The number of data items requested                         -->
+    <!-- ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ -->
+    <select id="getLastNPctEODChangeForAllSymbols" parameterClass="java.util.Map"
+                                                   resultMap="SymbolPctChangeResultMap">
+		SELECT  
+		    "SYMBOL", 
+		    "DATE",
+		    "CLOSING_PRICE",
+		    "PREV_CLOSING_PRICE"
+		FROM 
+		    "STOCK_EOD_DATA" 
+		WHERE 
+		    "DATE" in ( 
+		        SELECT 
+		            "DATE" 
+		        FROM 
+		            "STOCK_EOD_DATA" 
+		        WHERE 
+		            "SYMBOL" = 'ICICIBANK'
+		            AND "DATE" &lt;= #date# 
+		        ORDER BY "DATE" DESC 
+		        LIMIT $n$
+		    )
+		ORDER BY
+		    "SYMBOL" ASC, "DATE" DESC
+    </select>
+    
+    <!-- ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ -->
+    <!-- Retrieves all EOD index data for the specified scrip from the active-->
+    <!-- data table.                                                         -->
+    <!--                                                                     -->
+    <!-- @param scrip The symbol                                             -->
+    <!-- ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ -->
+    <select id="getActiveScripEOD" parameterClass="java.lang.String"
+                                   resultMap="Common.EODIndexResultMap" >
+        SELECT
+            "SYMBOL",
+            "DATE",
+            "OPENING_PRICE",
+            "CLOSING_PRICE",
+            "HIGH_PRICE",
+            "LOW_PRICE",
+            "TOTAL_TRADE_QTY",
+            "PREV_CLOSING_PRICE"
+        FROM 
+            "STOCK_EOD_DATA"
+        WHERE
+             "SYMBOL" = #scrip#
+        ORDER BY 
+             "DATE" ASC
+    </select>
+    
+    <!-- ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ -->
+    <!-- Retrieves all archived EOD index data for the specified scrip from  -->
+    <!-- the archive data table.                                             -->
+    <!--                                                                     -->
+    <!-- @param scrip The symbol                                             -->
+    <!-- ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ -->
+    <select id="getArchiveScripEOD" parameterClass="java.lang.String"
+                                   resultMap="Common.EODIndexResultMap" >
+        SELECT
+            "SYMBOL",
+            "DATE",
+            "OPENING_PRICE",
+            "CLOSING_PRICE",
+            "HIGH_PRICE",
+            "LOW_PRICE",
+            "TOTAL_TRADE_QTY",
+            "PREV_CLOSING_PRICE"
+        FROM 
+            "STOCK_EOD_DATA_ARCHIVE"
+        WHERE
+             "SYMBOL" = #scrip#
+        ORDER BY 
+             "DATE" ASC
+    </select>
+    
+    <!-- ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ -->
+    <!-- Inserts archived records into the archival table.                   -->
+    <!--                                                                     -->
+    <!-- @param boundary The threshold relative to which records will be     -->
+    <!--        archived.                                                    -->
+    <!-- ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ -->
+    <insert id="archiveLiveRecords" parameterClass="java.util.Date">
+        INSERT INTO "STOCK_EOD_DATA_ARCHIVE"
+        (
+            SELECT * 
+            FROM 
+                "STOCK_EOD_DATA"
+            WHERE
+                "DATE" &lt; #boundary#
+        )
+    </insert>
+
+    <!-- ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ -->
+    <!-- Deletes archived records from the live table                        -->
+    <!--                                                                     -->
+    <!-- @param boundary The threshold relative to which records will be     -->
+    <!--        deleted.                                                     -->
+    <!-- ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ -->
+    <insert id="deleteLiveRecords" parameterClass="java.util.Date">
+        DELETE FROM "STOCK_EOD_DATA"
+        WHERE
+            "DATE" &lt; #boundary#
+    </insert>
+</sqlMap>

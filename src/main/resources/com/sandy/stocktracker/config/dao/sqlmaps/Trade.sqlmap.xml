@@ -1,0 +1,143 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+
+<!DOCTYPE sqlMap PUBLIC "-//ibatis.apache.org//DTD SQL Map 2.0//EN"
+                        "http://ibatis.apache.org/dtd/sql-map-2.dtd">
+
+<!-- ======================================================================= -->
+<!-- This configuration file specifies the queries specific for the          -->
+<!-- RSS news item specific queries.                                         -->
+<!-- ======================================================================= -->
+<sqlMap namespace="Trade">
+
+    <!-- =================================================================== -->
+    <!-- TYPE ALIAS DECLARATIONS                                             -->
+    <!-- =================================================================== -->
+    <typeAlias alias="Trade"
+               type="com.sandy.stocktracker.shared.dto.Trade" />
+               
+    <!-- =================================================================== -->
+    <!-- RESULT MAP CONFIGURATION                                            -->
+    <!-- =================================================================== -->
+    <resultMap id="TradeResultMap" class="Trade">
+        <result property="tradeId"      column="TRADE_ID" />
+        <result property="date"         column="DATE" />
+        <result property="symbol"       column="SYMBOL" />
+        <result property="tradeType"    column="TYPE" />
+        <result property="buy"          column="IS_BUY" />
+        <result property="units"        column="UNITS" />
+        <result property="unitPrice"    column="UNIT_PRICE" />
+        <result property="brokerage"    column="BROKERAGE" />
+    </resultMap>
+    
+    <!-- ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ -->
+    <!-- Inserts an instance of Trade into the persistent storage.           -->
+    <!--                                                                     -->
+    <!-- @param An instance of Trade class                                   -->
+    <!-- ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ -->
+    <insert id="insert" parameterClass="Trade">
+        INSERT INTO "TRADE"
+        (
+			"TRADE_ID",
+			"DATE",
+			"SYMBOL",
+			"TYPE",
+			"IS_BUY",
+			"UNITS",
+			"UNIT_PRICE",
+			"BROKERAGE"
+        )
+        VALUES
+        (
+            #tradeId#,
+            #date#,
+            #symbol#,
+            #tradeType#,
+            #buy#,
+            #units#,
+            #unitPrice#,
+            #brokerage#
+        )
+    </insert>
+
+    <!-- ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ -->
+    <!-- Updates an instance of Trade in the persistent storage whose trade  -->
+    <!-- id matches that of the parameter trade instance.                    -->
+    <!--                                                                     -->
+    <!-- @param An instance of Trade class                                   -->
+    <!-- ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ -->
+    <update id="update" parameterClass="Trade">
+        UPDATE "TRADE"
+        SET
+            "DATE"       = #date#,
+            "SYMBOL"     = #symbol#,
+            "TYPE"       = #tradeType#,
+            "IS_BUY"     = #buy#,
+            "UNITS"      = #units#,
+            "UNIT_PRICE" = #unitPrice#,
+            "BROKERAGE"  = #brokerage#
+        WHERE
+            "TRADE_ID" = #tradeId#
+    </update>
+
+    <!-- ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ -->
+    <!-- Deletes the trade with the given id.                                -->
+    <!--                                                                     -->
+    <!-- @param An Integer value representing the trade identifier           -->
+    <!-- ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ -->
+    <delete id="delete">
+        DELETE
+        FROM "TRADE"
+        WHERE
+            "TRADE_ID" = #tradeId#
+    </delete>
+
+	<!-- ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ -->
+	<!-- Retrieves all the trades in the database in ascending order of their-->
+	<!-- trade date.                                                         -->
+	<!-- ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ -->
+    <select id="getAll" resultMap="TradeResultMap">
+        SELECT
+            "TRADE_ID",
+            "DATE",
+            "SYMBOL",
+            "TYPE",
+            "IS_BUY",
+            "UNITS",
+            "UNIT_PRICE",
+            "BROKERAGE"
+        FROM 
+            "TRADE"
+        ORDER BY "DATE" ASC
+    </select>
+
+    <!-- ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ -->
+    <!-- Retrieves the details of a trade with the given trade id.           -->
+    <!-- ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ -->
+    <select id="getTrade" resultMap="TradeResultMap">
+        SELECT
+            "TRADE_ID",
+            "DATE",
+            "SYMBOL",
+            "TYPE",
+            "IS_BUY",
+            "UNITS",
+            "UNIT_PRICE",
+            "BROKERAGE"
+        FROM 
+            "TRADE"
+        WHERE
+            "TRADE_ID" = #tradeId#
+        ORDER BY "DATE" ASC
+    </select>
+    
+    <!-- ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ -->
+    <!-- Gets the next available trade identifier, which can be used to      -->
+    <!-- insert a new trade into the database.                               -->
+    <!-- ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ -->
+    <select id="getNextTradeId" resultClass="java.lang.Integer">
+        SELECT
+            max( "TRADE_ID" ) + 1
+        FROM
+            "TRADE"
+    </select>
+</sqlMap>

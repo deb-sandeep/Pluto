@@ -1,0 +1,186 @@
+<?xml version="1.0" encoding="utf-8"?>
+
+<!-- ======================================================================= -->
+<!-- This file contains spring injection configurations for use by the biz   -->
+<!-- components. For service dependencies, please refer the                  -->
+<!-- view-service-context.xml configuration file.                            -->
+<!-- ======================================================================= -->
+<beans xmlns="http://www.springframework.org/schema/beans" 
+       xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" 
+       xmlns:tx="http://www.springframework.org/schema/tx"
+       xmlns:aop="http://www.springframework.org/schema/aop"
+       xsi:schemaLocation="http://www.springframework.org/schema/beans 
+                           http://www.springframework.org/schema/beans/spring-beans-2.0.xsd
+                           http://www.springframework.org/schema/tx 
+                           http://www.springframework.org/schema/tx/spring-tx-2.0.xsd
+                           http://www.springframework.org/schema/aop 
+                           http://www.springframework.org/schema/aop/spring-aop-2.0.xsd">
+
+    <!-- =================================================================== -->
+    <!-- ASPECT ORIENTED DECLARATIVE TRANSACTION CONFIGURATION               -->
+    <!-- =================================================================== -->
+    <!-- Define the transaction manager which manages txns on the data source-->
+    <bean id="STTxnMgr"
+        class="org.springframework.jdbc.datasource.DataSourceTransactionManager">
+        <property name="dataSource" ref="STDataSource" />
+    </bean>
+
+    <!-- The advice definition - rollback any transaction which results in a -->
+    <!-- service exception. Note: Even for get methods we have a txn advice, -->
+    <!-- as most of the get methods will do a select for update to check for -->
+    <!-- user access to the profile.                                         -->
+    <tx:advice id="STTxnAdvice" transaction-manager="STTxnMgr">
+        <tx:attributes>
+            <tx:method name="*"
+                       rollback-for="java.lang.Exception" />
+        </tx:attributes>
+    </tx:advice>
+
+    <!-- Define the AOP point cut, this definition will cause Spring to trap -->
+    <!-- all method invocations on services and apply the transaction advice -->
+    <!-- on them.                                                            -->
+    <aop:config>
+        <aop:pointcut id="servicePointCut"
+            expression="execution(* com.sandy.stocktracker.svc.*.*(..))" />
+        <aop:advisor advice-ref="STTxnAdvice" pointcut-ref="servicePointCut" />
+    </aop:config>
+    
+    <!-- =================================================================== -->
+    <!-- =================================================================== -->
+    <bean name="SymbolDAO" 
+          class="com.sandy.stocktracker.biz.dao.impl.SymbolDAO">
+        <property name="dataAccessManager" ref="STDataAccessManager" /> 
+    </bean>
+    
+    <!-- =================================================================== -->
+    <!-- =================================================================== -->
+    <bean name="EODIndexDAO" 
+          class="com.sandy.stocktracker.biz.dao.impl.EODIndexDAO">
+        <property name="dataAccessManager" ref="STDataAccessManager" /> 
+        <property name="symbolDAO"         ref="SymbolDAO" /> 
+    </bean>
+
+    <!-- =================================================================== -->
+    <!-- =================================================================== -->
+    <bean name="ITDIndexDAO" 
+          class="com.sandy.stocktracker.biz.dao.impl.ITDIndexDAO">
+        <property name="dataAccessManager" ref="STDataAccessManager" />
+        <property name="symbolDAO"         ref="SymbolDAO" /> 
+    </bean>
+
+    <!-- =================================================================== -->
+    <!-- =================================================================== -->
+    <bean name="UserPreferenceDAO" 
+          class="com.sandy.stocktracker.biz.dao.impl.UserPreferenceDAO">
+        <property name="dataAccessManager" ref="STDataAccessManager" /> 
+    </bean>
+    
+    <!-- =================================================================== -->
+    <!-- =================================================================== -->
+    <bean name="JobDAO" 
+          class="com.sandy.stocktracker.biz.dao.impl.JobDAO">
+        <property name="dataAccessManager" ref="STDataAccessManager" /> 
+    </bean>
+    
+    <!-- =================================================================== -->
+    <!-- =================================================================== -->
+    <bean name="ExIndexDAO" 
+          class="com.sandy.stocktracker.biz.dao.impl.ExIndexDAO">
+        <property name="dataAccessManager" ref="STDataAccessManager" /> 
+    </bean>
+    
+    <!-- =================================================================== -->
+    <!-- =================================================================== -->
+    <bean name="RSSDAO" 
+          class="com.sandy.stocktracker.biz.dao.impl.RSSDAO">
+        <property name="dataAccessManager" ref="STDataAccessManager" /> 
+    </bean>
+    
+    <!-- =================================================================== -->
+    <!-- =================================================================== -->
+    <bean name="TradeDAO" 
+          class="com.sandy.stocktracker.biz.dao.impl.TradeDAO">
+        <property name="dataAccessManager" ref="STDataAccessManager" /> 
+    </bean>
+    
+    <!-- =================================================================== -->
+    <!-- =================================================================== -->
+    <bean name="NetworkSvc" init-method="initialize"
+          class="com.sandy.stocktracker.biz.svc.impl.NetworkSvc">
+        <property name="userPrefSvc" ref="UserPreferenceSvc" /> 
+    </bean>
+    
+    <!-- =================================================================== -->
+    <!-- =================================================================== -->
+    <bean name="ITDImportSvc"
+          class="com.sandy.stocktracker.biz.svc.impl.ITDImportSvc">
+        <property name="itdIndexDAO" ref="ITDIndexDAO" /> 
+        <property name="eodIndexDAO" ref="EODIndexDAO" /> 
+        <property name="symbolDAO"   ref="SymbolDAO" />
+        <property name="networkSvc"  ref="NetworkSvc" />
+    </bean>
+    
+    <!-- =================================================================== -->
+    <!-- =================================================================== -->
+    <bean name="ITDBulkImportSvc"
+          class="com.sandy.stocktracker.biz.svc.impl.ITDBulkImportSvc">
+        <property name="networkSvc"  ref="NetworkSvc" />
+        <property name="itdIndexDAO" ref="ITDIndexDAO" />
+        <property name="jobSvc"      ref="JobSvc" /> 
+    </bean>
+    
+    <!-- =================================================================== -->
+    <!-- =================================================================== -->
+    <bean name="EODImportSvc" 
+          class="com.sandy.stocktracker.biz.svc.impl.EODImportSvc">
+        <property name="eodIndexDAO" ref="EODIndexDAO" /> 
+        <property name="symbolDAO"   ref="SymbolDAO" />
+        <property name="networkSvc"  ref="NetworkSvc" />
+    </bean>
+    
+    <!-- =================================================================== -->
+    <!-- =================================================================== -->
+    <bean name="ScripSvc" 
+          class="com.sandy.stocktracker.biz.svc.impl.ScripSvc">
+        <property name="eodIndexDAO" ref="EODIndexDAO" />
+        <property name="itdIndexDAO" ref="ITDIndexDAO" /> 
+        <property name="symbolDAO"   ref="SymbolDAO" />
+    </bean>
+
+    <!-- =================================================================== -->
+    <!-- =================================================================== -->
+    <bean name="UserPreferenceSvc" 
+          class="com.sandy.stocktracker.biz.svc.impl.UserPreferenceSvc">
+        <property name="userPrefDAO" ref="UserPreferenceDAO" /> 
+    </bean>
+
+    <!-- =================================================================== -->
+    <!-- =================================================================== -->
+    <bean name="JobSvc" init-method="initialize"
+          class="com.sandy.stocktracker.biz.svc.impl.JobSvc">
+        <property name="jobDAO" ref="JobDAO" /> 
+    </bean>
+    
+    <!-- =================================================================== -->
+    <!-- =================================================================== -->
+    <bean name="ExIndexSvc" 
+          class="com.sandy.stocktracker.biz.svc.impl.ExIndexSvc">
+        <property name="exIndexDAO" ref="ExIndexDAO" /> 
+        <property name="networkSvc"  ref="NetworkSvc" />
+    </bean>
+
+    <!-- =================================================================== -->
+    <!-- =================================================================== -->
+    <bean name="RSSSvc" 
+          class="com.sandy.stocktracker.biz.svc.impl.RSSSvc">
+        <property name="rssDAO"      ref="RSSDAO" /> 
+        <property name="networkSvc"  ref="NetworkSvc" />
+    </bean>
+
+    <!-- =================================================================== -->
+    <!-- =================================================================== -->
+    <bean name="AsyncExecutorSvc" init-method="initialize" 
+          class="com.sandy.stocktracker.biz.svc.impl.AsyncExecutorSvc">
+    </bean>
+
+</beans>  

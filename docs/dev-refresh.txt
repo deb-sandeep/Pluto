@@ -1,0 +1,23 @@
+NSE.PROD commands
+==============================================================
+\copy "SYMBOL" to 'c:/symbol.csv' csv header
+\copy "STOCK_ITD_DATA" to 'c:/stock_itd_data.csv' csv header
+\copy "STOCK_EOD_DATA" to 'c:/stock_eod_data.csv' csv header
+\copy "INDEX_EOD_DATA" to 'c:/index_eod_data.csv' csv header
+\copy "INDEX_ITD_DATA" to 'c:/index_itd_data.csv' csv header
+\copy "RSS_NEWS_ITEM" to 'c:/rss_news_item.csv' csv header
+
+NSE.DEV commands
+=============================================================
+delete from "SYMBOL" ;
+delete from "STOCK_ITD_DATA" ;
+delete from "STOCK_EOD_DATA" ;
+delete from "INDEX_ITD_DATA" ;
+delete from "INDEX_EOD_DATA" ;
+delete from "RSS_NEWS_ITEM" ;
+\copy "SYMBOL" ( "SYMBOL", "DESCR", "SERIES", "MKT_TYPE", "SEGMENT", "CNX_GROUP", "ICICI_CODE", "SEGMENT_CAT", "WEBSITE" ) from 'c:/symbol.csv' CSV HEADER
+\copy "STOCK_ITD_DATA" from 'c:/stock_itd_data.csv' csv header
+\copy "STOCK_EOD_DATA" from 'c:/stock_eod_data.csv' csv header
+\copy "INDEX_EOD_DATA" from 'c:/index_eod_data.csv' csv header
+\copy "INDEX_ITD_DATA" from 'c:/index_itd_data.csv' csv header
+\copy "RSS_NEWS_ITEM" from 'c:/rss_news_item.csv' csv header

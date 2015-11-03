@@ -1,0 +1,57 @@
+The NSE.DEV and NSE.PROD databases should be backed up at regular intervals. This 
+document summarizes the steps that need to be taken to backup and restore the 
+database.
+
+BACKUP
+=================================================================================
+commands:
+	pg_dump -U nse_prod NSE.PROD | gzip > c:\temp\NSE.PROD.MMDDYYYY.bak.gz
+	pg_dump -U nse_dev  NSE.DEV  | gzip > c:\temp\NSE.DEV.MMDDYYYY.bak.gz
+
+The generated files should be moved to an offline storage device immediately.
+The MMDDYYYY in the above commands should be replaced with the backup date equivalents.
+
+
+RESTORE
+=================================================================================
+Restoration is typically done when the database is corrupted or the database
+needs to be installed on a fresh machine. Before restoration can be applied, the
+following steps need to be taken.
+
+If we are installing a fresh database
+~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+a) Install Postgres database
+b) Create users nse_prod and nse_dev (with appropriate passwords)
+c) Create the NSE.DEV and NSE.PROD tables 
+
+------ DB creation script for NSE.DEV --------------
+CREATE DATABASE "NSE.DEV"
+  WITH OWNER = nse_dev
+       ENCODING = 'SQL_ASCII'
+       TABLESPACE = pg_default;
+GRANT ALL ON DATABASE "NSE.DEV" TO public;
+GRANT ALL ON DATABASE "NSE.DEV" TO nse_dev;
+
+------ DB creation script for NSE.PROD --------------
+CREATE DATABASE "NSE.PROD"
+  WITH OWNER = nse_prod
+       ENCODING = 'SQL_ASCII'
+       TABLESPACE = pg_default;
+GRANT ALL ON DATABASE "NSE.PROD" TO public;
+GRANT ALL ON DATABASE "NSE.PROD" TO nse_prod;
+
+
+If we are repairing an existing database.
+~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+Either we need to drop the databases and treat the scenario for creating a fresh 
+installation or we should drop all the objects in the database before proceeding.
+
+Once we have completed the prerequisite steps. We need to identify the backup file
+which will be restored. The file should be unzipped. Note that the unzipped file 
+would be huge in size, and hence it's imperative that it should be done on a size
+with enough space.
+
+commands:
+psql -d NSE.PROD -U nse_prod -f <location of NSE.PROD.MMDDYYYY.bak>
+psql -d NSE.DEV  -U nse_dev  -f <location of NSE.DEV.MMDDYYYY.bak>
+

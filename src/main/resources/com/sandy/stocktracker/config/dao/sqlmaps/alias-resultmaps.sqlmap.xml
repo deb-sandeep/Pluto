@@ -1,0 +1,120 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+
+<!DOCTYPE sqlMap PUBLIC "-//ibatis.apache.org//DTD SQL Map 2.0//EN"
+                        "http://ibatis.apache.org/dtd/sql-map-2.dtd">
+
+<!-- ======================================================================= -->
+<!-- This configuration file specifies the queries specific for the          -->
+<!-- common profile related queries.                                         -->
+<!-- ======================================================================= -->
+<sqlMap namespace="Common">
+
+    <!-- =================================================================== -->
+    <!-- TYPE ALIAS DECLARATIONS                                             -->
+    <!-- =================================================================== -->
+    <typeAlias alias="EODIndex"
+               type="com.sandy.stocktracker.shared.dto.ScripEOD" />
+               
+    <typeAlias alias="ITDIndex"
+               type="com.sandy.stocktracker.shared.dto.ScripITD" />
+               
+    <typeAlias alias="UserPreference"
+               type="com.sandy.stocktracker.shared.dto.UserPreference" />
+               
+    <typeAlias alias="TaskDetail"
+               type="com.sandy.stocktracker.shared.dto.TaskDetail" />
+               
+    <typeAlias alias="TaskAttrib"
+               type="com.sandy.stocktracker.biz.dao.impl.TaskAttribDTO" />
+               
+    <typeAlias alias="ExIndexEOD"
+               type="com.sandy.stocktracker.shared.dto.ExIndexEOD" />
+               
+    <typeAlias alias="ExIndexITD"
+               type="com.sandy.stocktracker.shared.dto.ExIndexITD" />
+               
+    <!-- =================================================================== -->
+    <!-- RESULT MAP CONFIGURATION                                            -->
+    <!-- =================================================================== -->
+    <resultMap id="ExIndexITDResultMap" class="ExIndexITD">
+        <result property="index"        column="INDEX_NAME" />
+        <result property="date"         column="DATE" />
+        <result property="currentVal"   column="VALUE" />
+        <result property="prevClose"    column="PREV_CLOSE" nullValue="0" />
+        <result property="open"         column="OPEN"       nullValue="0" />
+    </resultMap>
+
+    <resultMap id="ExIndexEODResultMap" class="ExIndexEOD">
+        <result property="index"        column="INDEX_NAME" />
+        <result property="date"         column="DATE" />
+        <result property="open"         column="OPEN" />
+        <result property="high"         column="HIGH" />
+        <result property="low"          column="LOW" />
+        <result property="close"        column="CLOSE" />
+        <result property="prevClose"    column="PREV_CLOSE" nullValue="0" />
+    </resultMap>
+
+    <resultMap id="EODIndexResultMap" class="EODIndex">
+        <result property="symbolId"         column="SYMBOL" />
+        <result property="date"             column="DATE" />
+        <result property="openingPrice"     column="OPENING_PRICE" />
+        <result property="closingPrice"     column="CLOSING_PRICE" />
+        <result property="highestPrice"     column="HIGH_PRICE" />
+        <result property="lowestPrice"      column="LOW_PRICE" />
+        <result property="totalTradeQty"    column="TOTAL_TRADE_QTY" />
+        <result property="prevClosePrice"   column="PREV_CLOSING_PRICE" nullValue="0" />
+    </resultMap>
+
+    <resultMap id="EODIndexResultMapWithDetails" class="EODIndex">
+        <result property="symbolId"             column="SYMBOL" />
+        <result property="date"                 column="DATE" />
+        <result property="openingPrice"         column="OPENING_PRICE" />
+        <result property="closingPrice"         column="CLOSING_PRICE" />
+        <result property="highestPrice"         column="HIGH_PRICE" />
+        <result property="lowestPrice"          column="LOW_PRICE" />
+        <result property="totalTradeQty"        column="TOTAL_TRADE_QTY" />
+        <result property="prevClosePrice"       column="PREV_CLOSING_PRICE" nullValue="0" />
+        <result property="symbol.symbol"        column="SYMBOL" />
+        <result property="symbol.series"        column="SERIES" />
+        <result property="symbol.marketType"    column="MKT_TYPE" />
+        <result property="symbol.description"   column="DESCR" />
+        <result property="symbol.niftyGroup"    column="CNX_GROUP" />
+        <result property="symbol.segment"       column="SEGMENT" />
+        <result property="symbol.iciciCode"     column="ICICI_CODE" />
+    </resultMap>
+    
+    <resultMap id="ITDIndexResultMap" class="ITDIndex">
+        <result property="symbolId"         column="SYMBOL" />
+        <result property="price"            column="PRICE" />
+        <result property="time"             column="TIME" />
+        <result property="totalTradeQty"    column="TOTAL_QTY" />
+        <result property="openingPrice"     column="OPEN"       nullValue="0" />
+        <result property="high"             column="HIGH"       nullValue="0" />
+        <result property="low"              column="LOW"        nullValue="0" />
+        <result property="prevClose"        column="PREV_CLOSE" nullValue="0" />
+        <result property="pctChange"        column="PCT_CHANGE" nullValue="0"/>
+    </resultMap>
+    
+    <resultMap id="UserPreferenceResultMap" class="UserPreference">
+        <result property="key"              column="KEY" />
+        <result property="value"            column="VALUE" />
+    </resultMap>
+    
+    <resultMap id="TaskDetailResultMap" class="TaskDetail">
+        <result property="id"               column="TASK_ID" />
+        <result property="type"             column="TASK_TYPE" />
+        <result property="name"             column="NAME" />
+        <result property="startup"          column="STARTUP_TYPE" />
+        <result property="cron"             column="FREQUENCY" />
+    </resultMap>
+    
+    <resultMap id="TaskAttribResultMap" class="TaskAttrib">
+        <result property="taskId"           column="TASK_ID" />
+        <result property="name"             column="NAME" />
+        <result property="value"            column="VALUE" />
+    </resultMap>
+    
+    <!-- =================================================================== -->
+    <!-- COMMON SQL SNIPPETS FOR INCLUSION IN CONCRETE QUERIES               -->
+    <!-- =================================================================== -->
+</sqlMap>

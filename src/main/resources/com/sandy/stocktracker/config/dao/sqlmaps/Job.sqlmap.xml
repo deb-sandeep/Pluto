@@ -1,0 +1,268 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+
+<!DOCTYPE sqlMap PUBLIC "-//ibatis.apache.org//DTD SQL Map 2.0//EN"
+                        "http://ibatis.apache.org/dtd/sql-map-2.dtd">
+
+<!-- ======================================================================= -->
+<!-- This configuration file specifies the queries specific for the          -->
+<!-- Task management related queries.                                        -->
+<!-- ======================================================================= -->
+<sqlMap namespace="Job">
+
+    <!-- =================================================================== -->
+    <!-- TYPE ALIAS DECLARATIONS                                             -->
+    <!-- =================================================================== -->
+    <typeAlias alias="JobDef"
+               type="com.sandy.stocktracker.shared.dto.JobDef" />
+               
+    <typeAlias alias="JobConfig"
+               type="com.sandy.stocktracker.shared.dto.JobConfig" />
+               
+    <typeAlias alias="JobAttribute"
+               type="com.sandy.stocktracker.shared.dto.JobAttribute" />
+    
+    <!-- =================================================================== -->
+    <!-- RESULT MAP CONFIGURATION                                            -->
+    <!-- =================================================================== -->
+    <resultMap id="JobDefResultMap" class="JobDef">
+        <result property="type"         column="TYPE" />
+        <result property="className"    column="CLASS" />
+        <result property="networkReq"   column="NET_REQ" />
+        <result property="icon"         column="ICON" />
+    </resultMap>
+
+    <resultMap id="JobConfigResultMap" class="JobConfig">
+        <result property="jobDef.type"         column="TYPE" />
+        <result property="jobDef.className"    column="CLASS" />
+        <result property="jobDef.networkReq"   column="NET_REQ" />
+        <result property="jobDef.icon"         column="ICON" />
+        <result property="jobId"               column="ID" />
+        <result property="name"                column="NAME" />
+        <result property="description"         column="DESCR" />
+        <result property="cron"                column="CRON" />
+        <result property="startupType"         column="STARTUP_TYPE" />
+        <result property="upperTimeBand"       column="UPPER_TIME_BAND" />
+        <result property="lowerTimeBand"       column="LOWER_TIME_BAND" />
+    </resultMap>
+    
+    <resultMap id="JobAttributeResultMap" class="JobAttribute">
+        <result property="jobId"               column="JOB_ID" />
+        <result property="name"                column="NAME" />
+        <result property="value"               column="VALUE" />
+        <result property="sequence"            column="SEQ" />
+        <result property="extraData1"          column="EXTRA_DATA1" />
+        <result property="extraData2"          column="EXTRA_DATA2" />
+    </resultMap>
+    
+    <!-- ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ -->
+    <!-- Selects a job definition from the database.                         -->
+    <!-- ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ -->
+    <select id="getJobDef" parameterClass="java.lang.String"
+                              resultMap="JobDefResultMap">
+        SELECT
+            "TYPE",
+            "CLASS",
+            "NET_REQ",
+            "ICON"
+        FROM
+            "JOB_DEF"
+        WHERE
+            "TYPE" = #jobType#
+    </select>
+    
+    <!-- ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ -->
+    <!-- Selects all job definition from the database.                       -->
+    <!-- ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ -->
+    <select id="getAllJobDef" resultMap="JobDefResultMap">
+        SELECT
+            "TYPE",
+            "CLASS",
+            "NET_REQ",
+            "ICON"
+        FROM
+            "JOB_DEF"
+    </select>
+    
+    <!-- ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ -->
+    <!-- Selects a job configuration from the database.                      -->
+    <!-- ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ -->
+    <select id="getJobConfig" parameterClass="java.lang.Integer"
+                              resultMap="JobConfigResultMap">
+        SELECT
+            def."TYPE",
+            def."CLASS",
+            def."NET_REQ",
+            def."ICON",
+            cfg."ID",
+            cfg."NAME",
+            cfg."DESCR",
+            cfg."CRON",
+            cfg."STARTUP_TYPE",
+            cfg."UPPER_TIME_BAND",
+            cfg."LOWER_TIME_BAND"
+        FROM
+            "JOB_DEF" def,
+            "JOB_CONFIG" cfg
+        WHERE
+                def."TYPE" = cfg."TYPE"
+            AND cfg."ID" = #jobId#
+    </select>
+
+    <!-- ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ -->
+    <!-- Selects all job configuration from the database.                    -->
+    <!-- ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ -->
+    <select id="getAllJobConfig" resultMap="JobConfigResultMap">
+        SELECT
+            def."TYPE",
+            def."CLASS",
+            def."NET_REQ",
+            def."ICON",
+            cfg."ID",
+            cfg."NAME",
+            cfg."DESCR",
+            cfg."CRON",
+            cfg."STARTUP_TYPE",
+            cfg."UPPER_TIME_BAND",
+            cfg."LOWER_TIME_BAND"
+        FROM
+            "JOB_DEF" def,
+            "JOB_CONFIG" cfg
+        WHERE
+             def."TYPE" = cfg."TYPE"
+    </select>
+
+    <!-- ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ -->
+    <!-- Retrieves the max JOB id from the database, this will be used for   -->
+    <!-- inserting new jobs in the system.                                   -->
+    <!-- ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ -->
+    <select id="getNextJobID" resultClass="java.lang.Integer">
+        SELECT max("ID") + 1 FROM "JOB_CONFIG"
+    </select>
+    
+    <!-- ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ -->
+    <!-- Inserts the specified JobConfig into the persistent storage         -->
+    <!-- ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ -->
+    <insert id="addJobConfig" parameterClass="JobConfig">
+        INSERT INTO "JOB_CONFIG" (
+            "ID",
+            "TYPE",
+            "NAME",
+            "DESCR",
+            "CRON",
+            "STARTUP_TYPE",
+            "UPPER_TIME_BAND",
+            "LOWER_TIME_BAND"
+        )
+        VALUES (
+            #jobId#,
+            #jobDef.type#,
+            #name#,
+            #description#,
+            #cron#,
+            #startupType#,
+            #upperTimeBand#,
+            #lowerTimeBand#
+        )
+    </insert>
+
+    <!-- ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ -->
+    <!-- Deletes the specified JobConfig into the persistent storage         -->
+    <!-- ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ -->
+    <delete id="deleteJobConfig" parameterClass="java.lang.Integer">
+        DELETE FROM "JOB_CONFIG" WHERE "ID" = #jobId#
+    </delete>
+
+    <!-- ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ -->
+    <!-- Updates the specified JobConfig into the persistent storage         -->
+    <!-- ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ -->
+    <update id="updateJobConfig" parameterClass="JobConfig">
+        UPDATE "JOB_CONFIG" SET 
+            "NAME"            = #name#,
+            "DESCR"           = #description#,
+            "CRON"            = #cron#,
+            "STARTUP_TYPE"    = #startupType#,
+            "UPPER_TIME_BAND" = #upperTimeBand#,
+            "LOWER_TIME_BAND" = #lowerTimeBand#
+        WHERE
+            "ID" = #jobId#
+    </update>
+
+    <!-- ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ -->
+    <!-- Returns all the attributes of a given task as maps.                 -->
+    <!-- ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ -->
+    <select id="getAttributes" resultMap="JobAttributeResultMap"
+                               parameterClass="java.lang.Integer">
+        SELECT
+            "JOB_ID",
+            "NAME",
+            "VALUE",
+            "SEQ",
+            "EXTRA_DATA1",
+            "EXTRA_DATA2"
+        FROM
+            "JOB_ATTR"
+        WHERE 
+            "JOB_ID" = #jobId#
+        ORDER BY
+            "NAME" ASC,
+            "SEQ" ASC
+    </select>
+
+    <!-- ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ -->
+    <!-- Inserts the specified attribute as the job attribute.               -->
+    <!--                                                                     -->
+    <!-- @param jobId The job identifier for which this attribute is inserted-->
+    <!-- @param attrName The name of the attribute                           -->
+    <!-- @param sequence The sequence id of this attribute value             -->
+    <!-- @param value The value of this attribute                            -->
+    <!-- ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ -->
+    <insert id="insertAttribute" parameterClass="JobAttribute">
+        INSERT INTO "JOB_ATTR" (
+            "JOB_ID",
+            "NAME",
+            "VALUE",
+            "SEQ",
+            "EXTRA_DATA1",
+            "EXTRA_DATA2"
+        )
+        VALUES (
+            #jobId#,
+            #name#,
+            #value#,
+            #sequence#,
+            #extraData1#,
+            #extraData2#
+        )
+    </insert>
+
+    <!-- ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ -->
+    <!-- Deletes the specified attribute from the job configuration.         -->
+    <!--                                                                     -->
+    <!-- @param jobId The job identifier for which this attribute is inserted-->
+    <!-- @param attrName The name of the attribute                           -->
+    <!-- ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ -->
+    <delete id="deleteAttribute" parameterClass="java.util.Map">
+        DELETE FROM 
+            "JOB_ATTR" 
+        WHERE
+                "JOB_ID"=#jobId#
+            AND "NAME"=#attrName#
+    </delete>
+    
+    <!-- ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ -->
+    <!-- Updates the specified attribute in   the job configuration.         -->
+    <!-- ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ -->
+    <update id="updateAttribute" parameterClass="JobAttribute">
+        UPDATE 
+            "JOB_ATTR"
+        SET
+            "VALUE" = #value#,
+            "EXTRA_DATA1" = #extraData1#,
+            "EXTRA_DATA2" = #extraData2#
+        WHERE
+                "JOB_ID"=#jobId#
+            AND "NAME"  =#name#
+            AND "SEQ"   =#sequence#
+    </update>
+    
+</sqlMap>

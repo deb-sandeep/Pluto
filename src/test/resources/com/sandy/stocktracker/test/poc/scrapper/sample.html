@@ -1,0 +1,536 @@
+
+
+
+
+
+
+<!DOCTYPE HTML PUBLIC "-//IETF//DTD HTML 3.0//EN">
+
+<html>
+<head>
+<title>NSE - Index Watch</title>
+<link href="/nse.css" rel="stylesheet" type="text/css">
+<script language="javascript" src="/js/commonfuncs.js"></script>
+<script language="javascript" src="/js/eq_leftnav.js"></script>
+<script language="JavaScript" type="text/JavaScript"
+	src="/js/tameLite.js"></script>
+
+<script language="javascript">
+	var isIE = (document.all) ? 1 : 0;
+	var isNS4 = (document.layers) ? 1 : 0;
+	var isNS6 = ((document.getElementById) && (navigator.appName == 'Netscape')) ? 1
+			: 0;
+	var isNS = ((isNS4) || (isNS6)) ? 1 : 0;
+	var DHTML = (isIE || isNS4 || isNS6) ? 1 : 0;
+
+	function handleError() {
+		return true;
+	}
+	window.onerror = handleError;
+	capEvents();
+
+	function popup(url) {
+		var chartpopup = window
+				.open(
+						url,
+						'chartspopup',
+						'location=no,menubar=no,toolbar=no,resizable=no,status=yes,width=780,height=500,scrollbars=yes,screenX=0,screenY=0,left=0,top=0')
+		chartpopup.focus();
+	}
+</script>
+</head>
+
+
+<body bgcolor="#ffffff" leftmargin="0" topmargin="0" marginheight="0"
+	marginwidth="0">
+	<div name="menulayer" id="menulayer"
+		style="visibility: hidden; position: absolute; width: 1px; height: 1px; z-index: 1; left: 1; top: 1"></div>
+
+
+
+	<table cellspacing="0" border="0" cellpadding="0" height="100%">
+		<tr>
+			<!--Left Nav Bar Starts Here-->
+			<script language="javascript">
+				writeLeftNav();
+			</script>
+			<!--Left Nav Bar Ends Here-->
+
+			<td valign="top">
+				<table cellpadding="0" cellspacing="0" border="0">
+					<tr>
+						<td width="10">&nbsp;</td>
+
+						<td valign="top">
+							<table cellpadding="0" cellspacing="0" border="0" width="600"
+								height="450">
+								<tr height=50>
+									<td class="smalllinks"><a id="top" href="/homepage.htm">Home</a>
+										&gt; <a href="/content/indices/ind_introduction.htm">Indices</a>
+										&gt; <a href="/content/indices/ind_statistics.htm">Statistics</a>
+										&gt; Index Watch<br />
+									<br /></td>
+								</tr>
+
+								<tr height="30">
+									<td class="header">Index Watch<br />
+									<br /></td>
+								</tr>
+
+
+
+								<tr>
+									<td align="right" class="smalllinks">As on 11-APR-2011
+										14:40:51 hours IST<br />
+									<br />
+									<br /></td>
+								</tr>
+
+								<tr>
+									<td valign=top>
+										<table border="0" align="center" bgcolor="#969696"
+											cellpadding="4" cellspacing="1" width="100%">
+											<tr>
+												<td class="tablehead">Index</td>
+												<td class="tablehead">&nbsp;</td>
+												<td class="tablehead">Prev Close</td>
+												<td class="tablehead">Open</td>
+												<td class="tablehead">High</td>
+												<td class="tablehead">Low</td>
+												<td class="tablehead">Last</td>
+												<td class="tablehead">% Change</td>
+												<td class="tablehead">&nbsp;</td>
+											</tr>
+
+											<tr>
+												<td class="t0"><a href="/content/indices/ind_nifty.htm">S&P
+														CNX NIFTY</a>
+												</td>
+												<td class="t0"><img src="/images/down.gif">
+												</td>
+												<td class="t1">5842.00</td>
+												<td class="t1">5805.35</td>
+												<td class="t1">5830.30</td>
+												<td class="t1">5781.75</td>
+												<td class="t1">5787.15</td>
+												<td class="t1">-0.94</td>
+												<td class="t0"><a
+													href="javascript:openTameLite('Segment=OI&CDSymbol=' + encodeURIComponent('S&P CNX NIFTY'))"><img
+														src="/images/grph.gif" border="0">
+												</a>
+												</td>
+											</tr>
+
+
+											<tr>
+												<td class="t0"><a
+													href="/content/indices/ind_jrnifty.htm">CNX NIFTY
+														JUNIOR</a>
+												</td>
+												<td class="t0"><img src="/images/down.gif">
+												</td>
+												<td class="t1">11544.35</td>
+												<td class="t1">11533.70</td>
+												<td class="t1">11533.70</td>
+												<td class="t1">11424.40</td>
+												<td class="t1">11450.50</td>
+												<td class="t1">-0.81</td>
+												<td class="t0"><a
+													href="javascript:openTameLite('Segment=OI&CDSymbol=' + encodeURIComponent('CNX NIFTY JUNIOR'))"><img
+														src="/images/grph.gif" border="0">
+												</a>
+												</td>
+											</tr>
+
+
+											<tr>
+												<td class="t0"><a href="/content/indices/ind_cnxit.htm">CNX
+														IT</a>
+												</td>
+												<td class="t0"><img src="/images/down.gif">
+												</td>
+												<td class="t1">7168.80</td>
+												<td class="t1">7107.50</td>
+												<td class="t1">7207.50</td>
+												<td class="t1">7099.20</td>
+												<td class="t1">7153.25</td>
+												<td class="t1">-0.22</td>
+												<td class="t0"><a
+													href="javascript:openTameLite('Segment=OI&CDSymbol=' + encodeURIComponent('CNX IT'))"><img
+														src="/images/grph.gif" border="0">
+												</a>
+												</td>
+											</tr>
+
+
+											<tr>
+												<td class="t0"><a
+													href="/content/indices/ind_cnxbank.htm">BANK NIFTY</a>
+												</td>
+												<td class="t0"><img src="/images/down.gif">
+												</td>
+												<td class="t1">11673.25</td>
+												<td class="t1">11591.00</td>
+												<td class="t1">11637.00</td>
+												<td class="t1">11551.75</td>
+												<td class="t1">11586.35</td>
+												<td class="t1">-0.74</td>
+												<td class="t0"><a
+													href="javascript:openTameLite('Segment=OI&CDSymbol=' + encodeURIComponent('BANK NIFTY'))"><img
+														src="/images/grph.gif" border="0">
+												</a>
+												</td>
+											</tr>
+
+
+											<tr>
+												<td class="t0"><a href="/content/press/prs_vix.htm">INDIA
+														VIX</a>
+												</td>
+												<td class="t0"><img src="/images/up.gif">
+												</td>
+												<td class="t1">20.54</td>
+												<td class="t1">20.54</td>
+												<td class="t1">21.63</td>
+												<td class="t1">20.36</td>
+												<td class="t1">21.34</td>
+												<td class="t1">3.89</td>
+												<td class="t0"><a
+													href="javascript:popup('/marketinfo/charting/OnlineIndexChart.jsp?indexname=INDIA%20VIX')"><img
+														src="/images/grph.gif" border="0">
+												</a>
+												</td>
+											</tr>
+
+
+											<tr>
+												<td class="t0"><a
+													href="/content/indices/ind_cnx100.htm">CNX 100</a>
+												</td>
+												<td class="t0"><img src="/images/down.gif">
+												</td>
+												<td class="t1">5739.10</td>
+												<td class="t1">5708.65</td>
+												<td class="t1">5726.65</td>
+												<td class="t1">5681.40</td>
+												<td class="t1">5685.80</td>
+												<td class="t1">-0.93</td>
+												<td class="t0"><a
+													href="javascript:openTameLite('Segment=OI&CDSymbol=' + encodeURIComponent('CNX 100'))"><img
+														src="/images/grph.gif" border="0">
+												</a>
+												</td>
+											</tr>
+
+
+											<tr>
+												<td class="t0"><a href="/content/indices/ind_defty.htm">S&P
+														CNX DEFTY</a>
+												</td>
+												<td class="t0"><img src="/images/down.gif">
+												</td>
+												<td class="t1">4590.65</td>
+												<td class="t1">4557.20</td>
+												<td class="t1">4576.30</td>
+												<td class="t1">4523.75</td>
+												<td class="t1">4529.10</td>
+												<td class="t1">-1.34</td>
+												<td class="t0"><a
+													href="javascript:openTameLite('Segment=OI&CDSymbol=' + encodeURIComponent('S&P CNX DEFTY'))"><img
+														src="/images/grph.gif" border="0">
+												</a>
+												</td>
+											</tr>
+
+
+											<tr>
+												<td class="t0"><a
+													href="/content/indices/ind_cnx500.htm">S&P CNX 500</a>
+												</td>
+												<td class="t0"><img src="/images/down.gif">
+												</td>
+												<td class="t1">4684.50</td>
+												<td class="t1">4664.60</td>
+												<td class="t1">4675.90</td>
+												<td class="t1">4641.45</td>
+												<td class="t1">4645.15</td>
+												<td class="t1">-0.84</td>
+												<td class="t0"><a
+													href="javascript:openTameLite('Segment=OI&CDSymbol=' + encodeURIComponent('S&P CNX 500'))"><img
+														src="/images/grph.gif" border="0">
+												</a>
+												</td>
+											</tr>
+
+
+											<tr>
+												<td class="t0"><a
+													href="/content/indices/ind_cnxmidcap.htm">CNX MIDCAP</a>
+												</td>
+												<td class="t0"><img src="/images/down.gif">
+												</td>
+												<td class="t1">8288.30</td>
+												<td class="t1">8287.65</td>
+												<td class="t1">8290.80</td>
+												<td class="t1">8213.90</td>
+												<td class="t1">8230.85</td>
+												<td class="t1">-0.69</td>
+												<td class="t0"><a
+													href="javascript:openTameLite('Segment=OI&CDSymbol=' + encodeURIComponent('CNX MIDCAP'))"><img
+														src="/images/grph.gif" border="0">
+												</a>
+												</td>
+											</tr>
+
+
+											<tr>
+												<td class="t0"><a
+													href="/content/indices/ind_niftymidcap50.htm">NIFTY
+														MIDCAP 50</a>
+												</td>
+												<td class="t0"><img src="/images/down.gif">
+												</td>
+												<td class="t1">2592.60</td>
+												<td class="t1">2589.40</td>
+												<td class="t1">2589.40</td>
+												<td class="t1">2560.70</td>
+												<td class="t1">2562.75</td>
+												<td class="t1">-1.15</td>
+												<td class="t0"><a
+													href="javascript:openTameLite('Segment=OI&CDSymbol=' + encodeURIComponent('NIFTY MIDCAP 50'))"><img
+														src="/images/grph.gif" border="0">
+												</a>
+												</td>
+											</tr>
+
+
+											<tr>
+												<td class="t0"><a
+													href="/content/indices/ind_cnxinfra.htm">CNX INFRA</a>
+												</td>
+												<td class="t0"><img src="/images/down.gif">
+												</td>
+												<td class="t1">3139.75</td>
+												<td class="t1">3130.15</td>
+												<td class="t1">3150.60</td>
+												<td class="t1">3109.45</td>
+												<td class="t1">3115.20</td>
+												<td class="t1">-0.78</td>
+												<td class="t0"><a
+													href="javascript:openTameLite('Segment=OI&CDSymbol=' + encodeURIComponent('CNX INFRA'))"><img
+														src="/images/grph.gif" border="0">
+												</a>
+												</td>
+											</tr>
+
+
+											<tr>
+												<td class="t0"><a
+													href="/content/indices/ind_cnxrealty.htm">CNX REALTY</a>
+												</td>
+												<td class="t0"><img src="/images/down.gif">
+												</td>
+												<td class="t1">329.30</td>
+												<td class="t1">328.80</td>
+												<td class="t1">328.80</td>
+												<td class="t1">319.75</td>
+												<td class="t1">321.50</td>
+												<td class="t1">-2.37</td>
+												<td class="t0"><a
+													href="javascript:openTameLite('Segment=OI&CDSymbol=' + encodeURIComponent('CNX REALTY'))"><img
+														src="/images/grph.gif" border="0">
+												</a>
+												</td>
+											</tr>
+
+
+											<tr>
+												<td class="t0"><a
+													href="/content/indices/ind_cnxenergy.htm">CNX ENERGY</a>
+												</td>
+												<td class="t0"><img src="/images/down.gif">
+												</td>
+												<td class="t1">9318.30</td>
+												<td class="t1">9273.55</td>
+												<td class="t1">9292.65</td>
+												<td class="t1">9183.00</td>
+												<td class="t1">9191.30</td>
+												<td class="t1">-1.36</td>
+												<td class="t0"><a
+													href="javascript:openTameLite('Segment=OI&CDSymbol=' + encodeURIComponent('CNX ENERGY'))"><img
+														src="/images/grph.gif" border="0">
+												</a>
+												</td>
+											</tr>
+
+
+											<tr>
+												<td class="t0"><a
+													href="/content/indices/ind_cnxfmcg.htm">CNX FMCG</a>
+												</td>
+												<td class="t0"><img src="/images/down.gif">
+												</td>
+												<td class="t1">9283.05</td>
+												<td class="t1">9286.55</td>
+												<td class="t1">9400.90</td>
+												<td class="t1">9260.05</td>
+												<td class="t1">9275.35</td>
+												<td class="t1">-0.08</td>
+												<td class="t0"><a
+													href="javascript:openTameLite('Segment=OI&CDSymbol=' + encodeURIComponent('CNX FMCG'))"><img
+														src="/images/grph.gif" border="0">
+												</a>
+												</td>
+											</tr>
+
+
+											<tr>
+												<td class="t0"><a
+													href="/content/indices/ind_cnxmnc.htm">CNX MNC</a>
+												</td>
+												<td class="t0"><img src="/images/down.gif">
+												</td>
+												<td class="t1">4823.25</td>
+												<td class="t1">4815.65</td>
+												<td class="t1">4822.35</td>
+												<td class="t1">4765.50</td>
+												<td class="t1">4774.00</td>
+												<td class="t1">-1.02</td>
+												<td class="t0"><a
+													href="javascript:openTameLite('Segment=OI&CDSymbol=' + encodeURIComponent('CNX MNC'))"><img
+														src="/images/grph.gif" border="0">
+												</a>
+												</td>
+											</tr>
+
+
+											<tr>
+												<td class="t0"><a
+													href="/content/indices/ind_cnxpharma.htm">CNX PHARMA</a>
+												</td>
+												<td class="t0"><img src="/images/up.gif">
+												</td>
+												<td class="t1">4587.95</td>
+												<td class="t1">4608.25</td>
+												<td class="t1">4618.25</td>
+												<td class="t1">4575.35</td>
+												<td class="t1">4596.30</td>
+												<td class="t1">0.18</td>
+												<td class="t0"><a
+													href="javascript:openTameLite('Segment=OI&CDSymbol=' + encodeURIComponent('CNX PHARMA'))"><img
+														src="/images/grph.gif" border="0">
+												</a>
+												</td>
+											</tr>
+
+
+											<tr>
+												<td class="t0"><a
+													href="/content/indices/ind_cnxpse.htm">CNX PSE</a>
+												</td>
+												<td class="t0"><img src="/images/down.gif">
+												</td>
+												<td class="t1">3601.45</td>
+												<td class="t1">3601.05</td>
+												<td class="t1">3601.05</td>
+												<td class="t1">3553.55</td>
+												<td class="t1">3558.90</td>
+												<td class="t1">-1.18</td>
+												<td class="t0"><a
+													href="javascript:openTameLite('Segment=OI&CDSymbol=' + encodeURIComponent('CNX PSE'))"><img
+														src="/images/grph.gif" border="0">
+												</a>
+												</td>
+											</tr>
+
+
+											<tr>
+												<td class="t0"><a
+													href="/content/indices/ind_cnxpsubank.htm">CNX PSU BANK</a>
+												</td>
+												<td class="t0"><img src="/images/down.gif">
+												</td>
+												<td class="t1">4456.40</td>
+												<td class="t1">4458.00</td>
+												<td class="t1">4473.35</td>
+												<td class="t1">4430.90</td>
+												<td class="t1">4455.75</td>
+												<td class="t1">-0.01</td>
+												<td class="t0"><a
+													href="javascript:openTameLite('Segment=OI&CDSymbol=' + encodeURIComponent('CNX PSU BANK'))"><img
+														src="/images/grph.gif" border="0">
+												</a>
+												</td>
+											</tr>
+
+
+											<tr>
+												<td class="t0"><a href="/content/indices/ind_ssi.htm">CNX
+														SERVICE</a>
+												</td>
+												<td class="t0"><img src="/images/down.gif">
+												</td>
+												<td class="t1">7174.85</td>
+												<td class="t1">7124.60</td>
+												<td class="t1">7155.60</td>
+												<td class="t1">7113.95</td>
+												<td class="t1">7123.40</td>
+												<td class="t1">-0.72</td>
+												<td class="t0"><a
+													href="javascript:openTameLite('Segment=OI&CDSymbol=' + encodeURIComponent('CNX SERVICE'))"><img
+														src="/images/grph.gif" border="0">
+												</a>
+												</td>
+											</tr>
+
+
+										</table>
+								</tr>
+								</td>
+
+
+								<tr>
+									<td class="smalllinks"><br />
+									<br /> <b>Note :</b>&nbsp;&nbsp;At end of day, "Last" is the
+										closing price.<br />
+									<br /></td>
+								</tr>
+
+
+
+
+								<tr>
+									<td class="smalllinks" align="center"><a
+										href="/content/indices/ind_histvalues.htm">Historical data
+											of NSE indices</a> | <a
+										href="/content/indices/ind_statistics.htm">Other index
+											statistics</a><br />
+									<br /></td>
+								</tr>
+
+								<tr>
+									<td class="smalllinks" align="center"><a
+										href="/content/equities/cmquote.htm">Get Quote</a> | <a
+										href="/content/equities/TopGainers.htm">Top Gainers</a> | <a
+										href="/content/equities/TopLosers.htm">Top Losers</a> | <a
+										href="/content/equities/MostActiveSecurities.htm">Most
+											Active Securities</a> | <a
+										href="/content/equities/niftysparks.htm" target="_blank">Sparklines</a><br />
+									<br /></td>
+								</tr>
+
+								<tr>
+									<td class="smalllinks" align="center"><a href="#top">Top</a><br />
+									<br /></td>
+								</tr>
+
+							</table></td>
+						<td width="10">&nbsp;</td>
+					</tr>
+				</table></td>
+		</tr>
+	</table>
+
+</body>
+</html>
+

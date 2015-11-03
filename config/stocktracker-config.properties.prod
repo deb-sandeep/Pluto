@@ -1,0 +1,20 @@
+# ==============================================================================
+# This file hosts the configurations of the system which can be modified 
+# in an installation copy by the user. 
+# ==============================================================================
+nse.eod.historic.download.location=D:\\softwares\\Pluto\\HISTORIC_EOD
+
+# The absolute path of the Pluto installation directory
+pluto.install.dir=D:\\softwares\\Pluto
+
+# The start time of the day in HH:mm format. Note that NSE follows different
+# business day timings throughout the year because of sun outages
+nse.business.start.time=09:55
+
+# The closing time of the day in HH:mm format. Note that NSE follows different
+# business day timings throughout the year because of sun outages
+nse.business.end.time=15:30
+
+# The number of days for which to show the news. By default this is 7 days. A
+# value of 0 implies that news only for the day is displayed.
+news.display.num.days=1

@@ -1,0 +1,32 @@
+<!ENTITY % boolean "(true|false)">
+
+<!ELEMENT menu-config (action-commands,menu+)>
+
+<!ELEMENT action-commands (action-command)+>
+
+<!ELEMENT action-command (target, enable-on-click?, disable-on-click?)>
+<!ATTLIST action-command name  CDATA #REQUIRED>
+
+<!ELEMENT target             (bean, operation, async?)>
+<!ELEMENT enable-on-click    (action-command-ref)+>
+<!ELEMENT disable-on-click   (action-command-ref)+>
+<!ELEMENT bean               (#PCDATA)>                    
+<!ELEMENT operation          (#PCDATA)>      
+<!ELEMENT async              (#PCDATA)>              
+<!ELEMENT action-command-ref (#PCDATA)>
+
+
+<!ELEMENT menu (menu-item+)>
+<!ATTLIST menu name CDATA #REQUIRED>
+
+<!ELEMENT menu-item ((icon?, popup-group?)|menu)>
+<!ATTLIST menu-item name                CDATA      #REQUIRED
+                    toolbarParticipant  %boolean; "false"
+                    actionCmdRef        CDATA      #REQUIRED>
+                    
+<!ELEMENT icon             (#PCDATA)>
+<!ELEMENT popup-group      (group-name)+>
+
+<!ELEMENT group-name   (#PCDATA)>                    
+
+

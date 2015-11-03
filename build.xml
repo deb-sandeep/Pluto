@@ -1,0 +1,198 @@
+<?xml version="1.0"?>
+
+<!-- ========================================================================== -->
+<!--                          PROJECT BUILD SCRIPT                              -->
+<!-- This file encapsulates the build logic for the project. The way this       -->
+<!-- script is drafted, it forms a quite generic build structure and refactors  -->
+<!-- any project specific properties & logic into a project specific build script-->
+<!-- fragment in the same directory. This ensures that the base copy can used as-->
+<!-- a reusable base template for most of the new projects.                     -->
+<!--                                                                            -->
+<!-- The genericity of this build script makes certain assumptions about the    -->
+<!-- directory structure of the project being developed. A detailed overview    -->
+<!-- of the directory structure layout can be found in the README.txt file      -->
+<!-- in this directory which contains overall guidelines detailing the directory-->
+<!-- structure of this project.                                                 -->
+<!--                                                                            -->
+<!-- Author : Sandeep Deb (deb.sandeep@gmail.com)                               -->
+<!--                                                                            -->
+<!-- ========================================================================== -->
+
+<project default="all" basedir=".">
+
+    <!-- ====================================================================== -->
+    <!-- Load the global properties.                                            -->
+    <!-- ====================================================================== -->
+    <property file="${basedir}/build.properties" />
+
+    <!-- ====================================================================== -->
+    <!-- Local properties specific to this build script.                        -->
+    <!-- ====================================================================== -->
+    <property name="project.id"     value="StockTracker" />
+    <property name="package.build"  value="true" />
+
+    <!-- ====================================================================== -->
+    <!-- Specify the task definitions if external (non-ant) tasks are used      -->
+    <!-- ====================================================================== -->
+
+    <!-- ====================================================================== -->
+    <!-- Compilation classpath for this module.                                 -->
+    <!-- ====================================================================== -->
+    <path id="compile.classpath">
+        <fileset dir="${lib.path}" />
+    </path>
+
+    <!-- ===================================================================== -->
+    <!-- TARGET : set_version                                                  -->
+    <!-- The "set_version" task is called if and only if the 'version.number'  -->
+    <!-- property is not already defined. This is typically in the case of     -->
+    <!-- timestamp builds. This property will be used to publish the artifacts -->
+    <!-- ===================================================================== -->
+    <target name="set_version" unless="version.number">
+        <tstamp>
+            <format property="version.number" pattern="'v'yyyyMMdd'_'hhmmss" locale="en"/>
+        </tstamp>
+    </target>
+
+    <!-- ===================================================================== -->
+    <!-- TARGET : init                                                         -->
+    <!-- The "init" target does the build initialization by defining variables -->
+    <!-- cleaning directories and making fresh ones for capturing the build    -->
+    <!-- output.                                                               -->
+    <!-- ===================================================================== -->
+    <target name="init" depends="set_version">
+
+        <!-- Delete directories                                                -->
+        <delete quiet="true" includeEmptyDirs="true" >
+            <fileset dir="${target.path}" />
+        </delete>
+
+        <!-- Create directories for holding the compile output.               -->
+        <mkdir dir="${target.path}/classes"/>
+        <mkdir dir="${target.path}/dist"/>
+        <mkdir dir="${target.path}/dist/${project.id}/bin" />
+        <mkdir dir="${target.path}/dist/${project.id}/lib" />
+        <mkdir dir="${target.path}/dist/${project.id}/config" />
+
+        <!-- Record the build                                                  -->
+        <echo message="Creating build log at ${target.path}/build.${version.number}.log" />
+        <record name="${basedir}/${target.path}/build.${version.number}.log" loglevel="info"/>
+    </target>
+
+    <!-- ===================================================================== -->
+    <!-- TARGET : compile                                                      -->
+    <!-- The "compile_main" target compiles the project specific non test source-->
+    <!-- code, and moves the relevant files to the ${target.path}/classes      -->
+    <!-- directory.                                                            -->
+    <!-- ===================================================================== -->
+    <target name="compile" depends="init">
+        <!-- Compile the java source code                                      -->
+        <javac srcdir       ="${src.path}/main/java"
+               destdir      ="${target.path}/classes"
+               debug        ="${compile.debug}"
+               optimize     ="${compile.optimize}"
+               deprecation  ="${compile.deprecation}">
+          <classpath refid="compile.classpath"/>
+        </javac>
+
+        <!-- copy the non java source artifacts to the war classes            -->
+        <copy todir="${target.path}/classes">
+            <fileset dir="${src.path}/main/resources">
+                <exclude name="*.properties" />
+            </fileset>
+        </copy>
+    </target>
+
+    <!-- ===================================================================== -->
+    <!-- TARGET : package                                                      -->
+    <!-- The "package" target compiles the project specific source code         -->
+    <!-- including the source and test code to the ${target.path}/classes      -->
+    <!-- directory and generates javadoc of the source tree.                   -->
+    <!-- ===================================================================== -->
+    <target name="package" unless="ignore.package" >
+
+    	<!-- Change the task bar images for dev and production deployments -->
+        <copy tofile="${target.path}/classes/com/sandy/stocktracker/images/pluto_connected.png"
+              file="${target.path}/classes/com/sandy/stocktracker/images/pluto_connected.prod.png"
+              overwrite="true" />
+        <copy tofile="${target.path}/classes/com/sandy/stocktracker/images/pluto_disconnected.png"
+              file="${target.path}/classes/com/sandy/stocktracker/images/pluto_disconnected.prod.png"
+              overwrite="true" />
+        
+    	<!-- Create the application jar -->
+        <jar destfile="${target.path}/dist/${project.id}/lib/${project.id}.jar">
+            <fileset dir="${target.path}/classes">
+                <exclude name="**\testsuites\**\*.*" />
+                <exclude name="**\testhelpers\**\*.*" />
+            </fileset>
+            <manifest>
+                <attribute name="Built-By" value="deb.sandeep@gmail.com"/>
+                <attribute name="Built-On" value="Date-${DSTAMP} Time-${TSTAMP}"/>
+                <section name="common">
+                    <attribute name="Implementation-Title" value="${project.id}"/>
+                    <attribute name="Implementation-Version" value="${version.number}"/>
+                    <attribute name="Implementation-Vendor" value="deb.sandeep@gmail.com"/>
+                </section>
+            </manifest>
+        </jar>
+
+        <!-- Copy the scripts -->
+        <copy todir="${target.path}/dist/${project.id}/bin">
+            <fileset dir="${script.path}" />
+        </copy>
+
+        <!-- Copy the configuration -->
+        <copy todir="${target.path}/dist/${project.id}/config">
+            <fileset dir="${basedir}/config">
+                <exclude name="*.prod"/>
+            	<exclude name="dev.pluto_itd_cache" />
+            </fileset>
+        </copy>
+
+        <!-- Once the move is succesful, delete the dist directory and -->
+        <!-- copy all the stuff there.                                 -->
+        <!-- Before deleting - move some of the runtime information    -->
+    	<!-- files to a temporary location so that we can copy them    -->
+    	<!-- back once the installation is complete.                   -->
+    	<move file="${dist.path}/config/prod.pluto_itd_cache"
+    		  tofile="${basedir}/prod.pluto_itd_cache" failonerror="false"/>
+    	<move file="${dist.path}/config/prod.pluto_index_itd_cache"
+    		  tofile="${basedir}/prod.pluto_index_itd_cache" failonerror="false"/>
+    	
+    	<!-- Delete directories                                        -->
+        <delete quiet="true" includeEmptyDirs="true" >
+          <fileset dir="${dist.path}" />
+        </delete>
+        <mkdir dir="${dist.path}/logs" />
+        <copy todir="${dist.path}">
+          <fileset dir="${target.path}/dist/${project.id}" />
+        </copy>
+        <copy todir="${dist.path}/lib">
+          <fileset dir="${lib.path}" />
+        </copy>
+        <copy tofile="${dist.path}/config/jdbc.properties"
+        	  file="${basedir}/config/jdbc.properties.prod"
+        	  overwrite="true" />
+        <copy tofile="${dist.path}/config/log4j.properties"
+              file="${basedir}/config/log4j.properties.prod"
+              overwrite="true"/>
+        <copy tofile="${dist.path}/config/stocktracker-config.properties"
+              file="${basedir}/config/stocktracker-config.properties.prod"
+              overwrite="true"/>
+        
+    	<!-- Once a fresh installation copy is put in the dist directory  -->
+    	<!-- move back the important runtime files we had moved earlier.  -->
+        <move tofile="${dist.path}/config/prod.pluto_itd_cache"
+              file="${basedir}/prod.pluto_itd_cache" failonerror="false"/>
+        <move tofile="${dist.path}/config/prod.pluto_index_itd_cache"
+              file="${basedir}/prod.pluto_index_itd_cache" failonerror="false"/>
+    	
+    </target>
+
+    <!-- ===================================================================== -->
+    <!-- TARGET : all                                                          -->
+    <!-- The "all" target drives the build script.                             -->
+    <!-- ===================================================================== -->
+    <target name="all" depends="compile,package" />
+</project>
+

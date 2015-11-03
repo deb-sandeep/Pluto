@@ -1,0 +1,24 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE bootstrap-config PUBLIC "-//Bootstrap//DTD 1.0//EN" 
+                                  "http://localhost/dtd/bootstrap-config.dtd">
+                                  
+<bootstrap-config>
+
+    <bootstrap-element class="ConfigManagerBootstrapElement">
+        <property name="delimitedParsingEnabled" value="true" />
+        <property name="configResource">
+            <value>/stocktracker-config.properties</value>
+            <value>/com/sandy/stocktracker/stocktracker-config.internal.properties</value>
+        </property>
+    </bootstrap-element>
+
+    <bootstrap-element class="SpringObjectFactoryBootstrapElement">
+        <property name="objectFactoryClass" value="BizObjectFactory" />
+        <property name="configResource">
+            <value>/com/sandy/stocktracker/config/spring/biz-spring-dataaccess-context.xml</value>
+            <value>/com/sandy/stocktracker/config/spring/biz-spring-context.xml</value>
+            <value>/com/sandy/stocktracker/config/spring/view-spring-context.xml</value>
+        </property>
+    </bootstrap-element>
+    
+</bootstrap-config>

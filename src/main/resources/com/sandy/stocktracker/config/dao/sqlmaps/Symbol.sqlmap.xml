@@ -1,0 +1,119 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+
+<!DOCTYPE sqlMap PUBLIC "-//ibatis.apache.org//DTD SQL Map 2.0//EN"
+                        "http://ibatis.apache.org/dtd/sql-map-2.dtd">
+
+<!-- ======================================================================= -->
+<!-- This configuration file specifies the queries specific for the          -->
+<!-- common profile related queries.                                         -->
+<!-- ======================================================================= -->
+<sqlMap namespace="Symbol">
+
+    <!-- =================================================================== -->
+    <!-- TYPE ALIAS DECLARATIONS                                             -->
+    <!-- =================================================================== -->
+    <typeAlias alias="Symbol"
+               type="com.sandy.stocktracker.shared.dto.Symbol" />
+               
+    <!-- =================================================================== -->
+    <!-- RESULT MAP CONFIGURATION                                            -->
+    <!-- =================================================================== -->
+    <resultMap id="SymbolResultMap" class="Symbol">
+        <result property="symbol"           column="SYMBOL" />
+        <result property="series"           column="SERIES" />
+        <result property="marketType"       column="MKT_TYPE" />
+        <result property="description"      column="DESCR" />
+        <result property="niftyGroup"       column="CNX_GROUP" />
+        <result property="segment"          column="SEGMENT" />
+        <result property="segmentCat"       column="SEGMENT_CAT" />
+        <result property="website"          column="WEBSITE" />
+        <result property="iciciCode"        column="ICICI_CODE" />
+    </resultMap>
+    
+    <!-- ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ -->
+    <!-- Inserts an Symbol into the database.                                -->
+    <!-- ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ -->
+    <insert id="insert" parameterClass="Symbol">
+        INSERT INTO "SYMBOL"
+        (
+			"SYMBOL",
+			"DESCR",
+			"SERIES",
+			"MKT_TYPE",
+			"CNX_GROUP",
+			"SEGMENT",
+			"ICICI_CODE",
+			"SEGMENT_CAT",
+			"WEBSITE"
+        )
+        VALUES
+        (
+            #symbol#,
+            #description#,
+            #series#,
+            #marketType#,
+            #niftyGroup#,
+            #segment#,
+            #iciciCode#,
+            #segmentCat#,
+            #website#
+        )
+    </insert>
+
+    <!-- ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ -->
+    <!-- Updates a  Symbol in   the database.                                -->
+    <!-- ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ -->
+    <update id="update" parameterClass="Symbol">
+        UPDATE "SYMBOL"
+        SET
+            "DESCR"       = #description#,
+            "SERIES"      = #series#,
+            "MKT_TYPE"    = #marketType#,
+            "CNX_GROUP"   = #niftyGroup#,
+            "SEGMENT"     = #segment#,
+            "ICICI_CODE"  = #iciciCode#,
+            "SEGMENT_CAT" = #segmentCat#,
+            "WEBSITE"     = #website#
+        WHERE
+            "SYMBOL"   = #symbol#
+    </update>
+
+    <!-- ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ -->
+    <!-- Retrieves all the registered symbols in the database.               -->
+    <!-- ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ -->
+    <select id="getAll" resultMap="SymbolResultMap">
+        SELECT
+            "SYMBOL", "SERIES", "MKT_TYPE", "DESCR", "CNX_GROUP", 
+            "SEGMENT", "ICICI_CODE", "SEGMENT_CAT", "WEBSITE"
+        FROM
+            "SYMBOL"
+    </select>
+
+    <!-- ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ -->
+    <!-- Retrieves the symbol with the given name.                           -->
+    <!-- ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ -->
+    <select id="getSymbol" resultMap="SymbolResultMap" 
+                           parameterClass="java.lang.String">
+        SELECT
+            "SYMBOL", "SERIES", "MKT_TYPE", "DESCR", "CNX_GROUP", 
+            "SEGMENT", "ICICI_CODE", "SEGMENT_CAT", "WEBSITE"
+        FROM
+            "SYMBOL"
+        WHERE
+            "SYMBOL" = #symbol#
+    </select>
+
+    <!-- ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ -->
+    <!-- Retrieves the symbol with the given category.                       -->
+    <!-- ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ -->
+    <select id="getSymbolForCategory" resultMap="SymbolResultMap" 
+                                      parameterClass="java.lang.String">
+        SELECT
+            "SYMBOL", "SERIES", "MKT_TYPE", "DESCR", "CNX_GROUP", 
+            "SEGMENT", "ICICI_CODE", "SEGMENT_CAT", "WEBSITE"
+        FROM
+            "SYMBOL"
+        WHERE
+            "CNX_GROUP" = #group#
+    </select>
+</sqlMap>

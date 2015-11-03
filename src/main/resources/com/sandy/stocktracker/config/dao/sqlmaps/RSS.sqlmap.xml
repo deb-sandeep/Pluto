@@ -1,0 +1,211 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+
+<!DOCTYPE sqlMap PUBLIC "-//ibatis.apache.org//DTD SQL Map 2.0//EN"
+                        "http://ibatis.apache.org/dtd/sql-map-2.dtd">
+
+<!-- ======================================================================= -->
+<!-- This configuration file specifies the queries specific for the          -->
+<!-- RSS news item specific queries.                                         -->
+<!-- ======================================================================= -->
+<sqlMap namespace="RSS">
+
+    <!-- =================================================================== -->
+    <!-- TYPE ALIAS DECLARATIONS                                             -->
+    <!-- =================================================================== -->
+    <typeAlias alias="RSSNewsItem"
+               type="com.sandy.stocktracker.shared.dto.RSSNewsItem" />
+               
+    <typeAlias alias="RSSNewsItemSource"
+               type="com.sandy.stocktracker.shared.dto.RSSNewsItemSource" />
+    
+    <!-- =================================================================== -->
+    <!-- RESULT MAP CONFIGURATION                                            -->
+    <!-- =================================================================== -->
+    <resultMap id="RSSNewsItemResultMap" class="RSSNewsItem">
+        <result property="site"         column="SITE" />
+        <result property="category"     column="CATEGORY" />
+        <result property="publishDate"  column="PUB_DATE" />
+        <result property="title"        column="TITLE" />
+        <result property="description"  column="DESCR" />
+        <result property="newItem"      column="IS_NEW" />
+        <result property="url"          column="URL" />
+    </resultMap>
+    
+    <resultMap id="RSSNewsItemOverviewResultMap" class="RSSNewsItem">
+        <result property="site"         column="SITE" />
+        <result property="category"     column="CATEGORY" />
+        <result property="publishDate"  column="PUB_DATE" />
+        <result property="title"        column="TITLE" />
+        <result property="newItem"      column="IS_NEW" />
+        <result property="url"          column="URL" />
+    </resultMap>
+    
+    <resultMap id="RSSNewsItemSourceResultMap" class="RSSNewsItemSource">
+        <result property="site"         column="SITE" />
+        <result property="category"     column="CATEGORY" />
+        <result property="url"          column="URL" />
+        <result property="active"       column="IS_ACTIVE" />
+    </resultMap>
+    
+    <!-- ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ -->
+    <!-- Inserts an instance of RSSNewsItem into the persistent storage.     -->
+    <!--                                                                     -->
+    <!-- @param An instance of RSSNewsItem class                             -->
+    <!-- ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ -->
+    <insert id="insertNewsItem" parameterClass="RSSNewsItem">
+        INSERT INTO "RSS_NEWS_ITEM"
+        (
+			"SITE",
+			"CATEGORY",
+			"PUB_DATE",
+			"TITLE",
+			"DESCR",
+			"IS_NEW",
+			"URL"
+        )
+        VALUES
+        (
+            #site#,
+            #category#,
+            #publishDate#,
+            #title#,
+            #description#,
+            #newItem#,
+            #url#
+        )
+    </insert>
+
+    <!-- ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ -->
+    <!-- Updates the isNew flag into the specified news item. Please note    -->
+    <!-- that an entry of the RSS news item is immutable except for the isNew-->
+    <!-- flag.                                                               -->
+    <!--                                                                     -->
+    <!-- @param An instance of RSSNewsItem class with minimally the PK info  -->
+    <!--        populated.                                                   -->
+    <!-- ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ -->
+    <update id="updateNewsItem" parameterClass="RSSNewsItem">
+        UPDATE "RSS_NEWS_ITEM"
+        SET
+            "IS_NEW" = #newItem#
+        WHERE
+                "SITE" = #site#
+            AND "CATEGORY" = #category#
+            AND "PUB_DATE" = #publishDate#
+            AND "TITLE" = #title#
+    </update>
+
+    <!-- ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ -->
+    <!-- Get all the news item overview for the time period. An overview is  -->
+    <!-- an instance of RSS new item with the description not populated. A   -->
+    <!-- boolean parameter specifies whether to include or exclude the       -->
+    <!-- already read news items.                                            -->
+    <!--                                                                     -->
+    <!-- @param startDate The start date of the time range                   -->
+    <!-- @param endDate The end date of the time range. If the end date is   -->
+    <!--        null, the current time is considered.                        -->
+    <!-- @param includeReadItems If true, the returned list will have items  -->
+    <!--        which are already read. If false, only the unread items will -->
+    <!--        be returned.                                                 -->
+    <!-- @return A list of {@link RSSNewsItem} instances. Please note that   -->
+    <!--       the returned instances do not have the description information-->
+    <!--       populated. It is expected that news item details will be      -->
+    <!--       fetched on an individual basis when the user explicitly wants -->
+    <!--       to read it.                                                   -->
+    <!-- ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ -->
+    <select id="getNewsItemOverview" resultMap="RSSNewsItemOverviewResultMap">
+        SELECT
+            "SITE",
+            "CATEGORY",
+            "PUB_DATE",
+            "TITLE",
+            "IS_NEW",
+            "URL"
+        FROM "RSS_NEWS_ITEM"
+        WHERE
+                "PUB_DATE" &gt;= #startDate#
+            AND "PUB_DATE" &lt;= #endDate#
+        <isEqual property="includeReadItems" compareValue="FALSE">
+            AND "IS_NEW" = 'TRUE'
+        </isEqual>
+    </select>
+
+	<!-- ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ -->
+	<!-- Get the news item as specified by the item overview. Note that the  -->
+	<!-- only difference between the input and output data items is that the -->
+	<!-- output data item has the description populated.                     -->
+	<!--                                                                     -->
+	<!-- @param metaData An instance of {@link RSSNewsItem} with minimally   -->
+	<!--        the PK information and its read status set.                  -->
+	<!--                                                                     -->
+	<!-- @return An instance of {@link RSSNewsItem} with the description     -->
+	<!--         information populated.                                      -->
+	<!-- ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ -->
+    <select id="getNewsItemDetail" resultMap="RSSNewsItemResultMap" 
+                           parameterClass="RSSNewsItem">
+        SELECT
+            "SITE",
+            "CATEGORY",
+            "PUB_DATE",
+            "TITLE",
+            "DESCR",
+            "IS_NEW",
+            "URL"
+        FROM "RSS_NEWS_ITEM"
+        WHERE
+                "SITE" = #site#
+            AND "CATEGORY" = #category#
+            AND "PUB_DATE" = #publishDate#
+            AND "TITLE" = #title#
+    </select>
+
+    <!-- ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ -->
+	<!-- Get all the news item sources. A boolean parameter specifies whether-->
+	<!-- to include or exclude the inactive sources.                         -->
+	<!--                                                                     -->
+	<!-- @param includeInactive If set to true, even the inactive news sources-->
+	<!--        will be returned.                                            -->
+    <!--                                                                     -->
+	<!-- @return A list of {@link RSSNewsItemSource} instances.              -->
+    <!-- ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ -->
+    <select id="getNewsItemSources" resultMap="RSSNewsItemSourceResultMap" 
+                                    parameterClass="java.util.Map">
+        SELECT
+            "SITE",
+            "CATEGORY",
+            "URL",
+            "IS_ACTIVE"
+        FROM
+            "RSS_NEWS_ITEM_SOURCE"
+        <isEqual property="includeInactive" compareValue="FALSE">
+        WHERE
+            "IS_ACTIVE" = 'TRUE'
+        </isEqual>
+    </select>
+
+    <!-- ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ -->
+    <!-- Get all the news item sources associated with the specified source. -->
+    <!-- A boolean parameter specifies whether to include or exclude the     -->
+    <!-- inactive sources.                                                   -->
+    <!--                                                                     -->
+    <!-- @param source The source identifier.                                -->
+    <!-- @param includeInactive If set to true, even the inactive news sources-->
+    <!--        will be returned.                                            -->
+    <!--                                                                     -->
+    <!-- @return A list of {@link RSSNewsItemSource} instances.              -->
+    <!-- ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ -->
+    <select id="getNewsItemSourcesForSource" resultMap="RSSNewsItemSourceResultMap" 
+                                    parameterClass="java.util.Map">
+        SELECT
+            "SITE",
+            "CATEGORY",
+            "URL",
+            "IS_ACTIVE"
+        FROM
+            "RSS_NEWS_ITEM_SOURCE"
+        WHERE
+                "SITE" = #site#
+        <isEqual property="includeInactive" compareValue="FALSE">
+            AND "IS_ACTIVE" = 'TRUE'
+        </isEqual>
+    </select>
+</sqlMap>
